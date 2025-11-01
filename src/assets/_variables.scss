@@ -1,0 +1,67 @@
+// Shared SCSS Variables
+$body-bg: #f5f5f5;
+$main-bg: #ffffff;
+$header-bg: #343a40;
+$footer-bg: #343a40;
+$text-color: #333333;//$primary-color, $secondary-color, $primary-color, -invert
+$text-color-invert: #f5f5f5;
+
+// Colors
+$primary-color: #3498db;
+$secondary-color: #2ecc71;
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$danger-color: #e74c3c;
+$info-color: #9b59b6;
+
+// Scrollbar
+//$scrollbar-track: #f1f1f1;
+//$scrollbar-thumb: #c1c1c1;
+//$scrollbar-thumb-hover: #a8a8a8;
+$scrollbar-track: red;
+$scrollbar-thumb: green;
+$scrollbar-thumb-hover: blue;
+
+// Typography
+$font-family-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-size-base: 16px;
+$font-size-small: 14px;
+$font-size-large: 18px;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+// Border radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// === BREAKPOINTS MAP ===
+//$_breakpoints: (
+//        xs: 0, // mobile
+//        sm: 576px, // small tablets
+//        md: 768px, // tablets
+//        lg: 1024px, // small desktops
+//        xl: 1280px, // large desktops
+//        xxl: 1440px // full HD / widescreen
+//);
+
+$breakpoints: (
+        xxs: 0, // Базовые стили для самых маленьких экранов
+        xs: 375px, // Стандартные мобильные экраны
+        sm: 576px, // Ландшафтный режим смартфонов
+        md: 768px, // Планшеты
+        lg: 1024px, // Ноутбуки
+        xl: 1280px, // Десктопы
+        xxl: 1440px // Широкоформатные мониторы
+);

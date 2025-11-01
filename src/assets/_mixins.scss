@@ -1,0 +1,10 @@
+// Shared SCSS Mixins
+@use 'sass:color';
+@use 'variables' as *;
+
+// === FLEX CENTER MIXIN ===
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

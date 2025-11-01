@@ -1,0 +1,85 @@
+// Shared SCSS Mixins
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:color';
+@use 'variables' as *;
+
+$footer-bg-test: red;
+
+// === Mixin: respond-from (mobile-first, min-width) ===
+@mixin respond-from($breakpoint) {
+  $value: map.get($breakpoints, $breakpoint);
+  @if $value != null {
+    @media (min-width: $value) {
+      @content;
+    }
+  } @else {
+    @warn "⚠️ Breakpoint `#{$breakpoint}` not found in $breakpoints map.";
+  }
+}
+
+// === Mixin: respond-to (desktop-first, max-width) ===
+@mixin respond-to($breakpoint) {
+  $value: map.get($breakpoints, $breakpoint);
+  @if $value != null {
+    // Немного уменьшаем, чтобы не пересекались границы с min-width
+    @media (max-width: $value - 0.02px) {
+      @content;
+    }
+  } @else {
+    @warn "⚠️ Breakpoint `#{$breakpoint}` not found in $breakpoints map.";
+  }
+}
+
+// === Mixin: between two breakpoints ===
+@mixin respond-between($from, $to) {
+  $min: map.get($breakpoints, $from);
+  $max: map.get($breakpoints, $to);
+
+  @if $min != null and $max != null {
+    @media (min-width: $min) and (max-width: $max - 0.02px) {
+      @content;
+    }
+  } @else {
+    @warn "⚠️ One of the breakpoints (`#{$from}` or `#{$to}`) not found.";
+  }
+}
+
+// === Mixin: retina displays ===
+@mixin respond-retina {
+  @media (-webkit-min-device-pixel-ratio: 2),
+  (min-resolution: 192dpi),
+  (min-resolution: 2dppx) {
+    @content;
+  }
+}
+
+// === Mixin: orientation ===
+@mixin respond-orientation($type) {
+  @if $type == portrait or $type == landscape {
+    @media (orientation: $type) {
+      @content;
+    }
+  } @else {
+    @warn "⚠️ Orientation must be 'portrait' or 'landscape'.";
+  }
+}
+
+//Пример для наглядности:
+//
+//1 .title {
+//2   // Эти стили применятся от 0px до 374px
+//3   font-size: 20px;
+//4   padding: 10px;
+//5
+//6   // Начиная с 375px, переопределяем стили
+//7   @include respond-from(xs) {
+//8     font-size: 22px;
+//9   }
+//10
+//11   // Начиная с 576px, снова переопределяем
+//12   @include respond-from(sm) {
+//13     font-size: 24px;
+//14     padding: 15px;
+//15   }
+//16 }

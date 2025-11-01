@@ -1,0 +1,78 @@
+@use '@/assets/variables' as *;
+@use '@/assets/buttons' as *;
+@use '@/assets/mixins' as *;
+//@use "@/assets/reset";
+
+@use 'sass:meta';
+
+@layer reset {
+  @include meta.load-css('@/assets/reset');
+}
+
+/* CSS переменные для легкой настройки темы */
+/*:root {
+  --bg-color: #f8f9fc;
+  --container-bg: #ffffff;
+  --text-color: #1f2937;
+  --label-color: #4b5563;
+  --border-color: #d1d5db;
+  --border-focus-color: #4f46e5;
+
+  --primary-hover-color: #4338ca;
+  --code-bg: #f3f4f6;
+  --code-color: #111827;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+
+
+  --primary-color: #{$primary-color};
+  --secondary-color: #{$secondary-color};
+  --success-color: #{$success-color};
+  --warning-color: #{$warning-color};
+  --danger-color: #{$danger-color};
+  --info-color: #{$info-color};
+
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+}*/
+
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-track transparent;
+  font-size: $font-size-base;
+  line-height: 1.6;
+}
+
+// #app
+body {
+  font-family: $font-family-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: $body-bg;
+  color: $text-color;
+
+  &, #app {
+    min-height: 100vh;
+  }
+}
+
+// Стили для скроллбара
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $scrollbar-track;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb;
+  border-radius: 4px;
+
+  &:hover {
+    background: $scrollbar-thumb-hover;
+  }
+}

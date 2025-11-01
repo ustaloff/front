@@ -1,0 +1,41 @@
+@use 'sass:color';
+@use '@/assets/variables' as *;
+
+// === BUTTON MIXIN ===
+@mixin button-style($bg-color: $primary-color, $text-color: white) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-sm;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: color.adjust($bg-color, $lightness: -10%);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// === BUTTON MAP ===
+$button-colors: (
+        primary: $primary-color,
+        secondary: $secondary-color,
+        success: $success-color,
+        warning: $warning-color,
+        danger: $danger-color,
+        info: $info-color,
+);
+
+// === GENERATION ===
+@each $name, $color in $button-colors {
+  .btn-#{$name} {
+    @include button-style($color);
+  }
+}

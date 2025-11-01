@@ -1,0 +1,12 @@
+// Shared SCSS Mixins
+@use 'sass:color';
+@use 'variables' as *;
+
+// === CARD MIXIN ===
+@mixin card-style($padding: $spacing-md) {
+  background: white;
+  border-radius: $radius-md;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: $padding;
+  margin-bottom: $spacing-md;
+}

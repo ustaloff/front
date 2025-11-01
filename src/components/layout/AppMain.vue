@@ -9,6 +9,6 @@
 
 .app-main {
     padding: max(2rem, 8%);
-    background: $main-bg;
+    //background: $main-bg;
 }
 </style>

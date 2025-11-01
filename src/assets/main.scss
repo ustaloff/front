@@ -50,8 +50,9 @@ body {
   font-family: $font-family-base;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: $body-bg;
-  color: $text-color;
+  //background: $body-bg;
+  background: var(--p-body-background);
+  color: var(--p-text-color);
 
   &, #app {
     min-height: 100vh;

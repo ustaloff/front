@@ -51,6 +51,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: var(--body-background);
   color: var(--body-text-color);
+  container: body / inline-size;
 
   &, #app {
     min-height: 100vh;
@@ -78,15 +79,14 @@ main {
   }
 }
 
-@media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width} + 200px)) {
+@media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width} * 2)) {
   header, main, footer {
     padding-inline-start: 0;
     transition: padding-inline-start 0.3s ease;
   }
 
-  // 🔥 Используем data-attribute вместо :has()
-  body[data-sidebar-offset="true"]:not(:has(.sidebar--mobile)) :where(header, main, footer) {
-    padding-inline-start: calc(var(--sidebar-current-width) + 10px);
+  body:not(:has(.sidebar--mobile)) :where(header, main, footer) {
+    padding-inline-start: calc(var(--sidebar-current-width) + 0px);
   }
 }
 

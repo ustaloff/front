@@ -23,19 +23,13 @@ const saveExpandedState = (isExpanded) => {
     }
 }
 
-// 🔥 Кэшированные размеры сайдбара из CSS переменных
-let cachedSidebarWidths = null
-
 const getSidebarWidth = () => {
-    if (!cachedSidebarWidths) {
-        const expanded = getComputedStyle(document.documentElement)
-            .getPropertyValue('--sidebar-width').trim()
-        const minimized = getComputedStyle(document.documentElement)
-            .getPropertyValue('--sidebar-minimized-width').trim()
+    const expanded = getComputedStyle(document.documentElement)
+        .getPropertyValue('--sidebar-width').trim()
+    const minimized = getComputedStyle(document.documentElement)
+        .getPropertyValue('--sidebar-minimized-width').trim()
 
-        cachedSidebarWidths = {expanded, minimized}
-    }
-    return cachedSidebarWidths
+    return {expanded, minimized}
 }
 
 // 🔥 Утилитарная функция для получения текущей ширины сайдбара
@@ -47,10 +41,8 @@ const getCurrentSidebarWidth = (isExpanded) => {
 // 🔥 Функция для управления data-attribute на body
 const updateBodySidebarState = (shouldOffset, width) => {
     if (shouldOffset) {
-        document.body.setAttribute('data-sidebar-offset', 'true')
         document.body.style.setProperty('--sidebar-current-width', width)
     } else {
-        document.body.removeAttribute('data-sidebar-offset')
         document.body.style.removeProperty('--sidebar-current-width')
     }
 }
@@ -156,7 +148,3 @@ export function handleBeforeHide() {
     updateBodySidebarState(false, '0px')
 }
 
-// 🔥 Функция для сброса кэша размеров (если CSS переменные изменились)
-export function resetSidebarWidthCache() {
-    cachedSidebarWidths = null
-}

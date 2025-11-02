@@ -43,7 +43,7 @@ const onBeforeHide = () => {
         </div>
 
         <Drawer
-            v-model:visible="isOpen"
+            v-model:visible="sidebarState.isOpen"
             :modal="isMobile"
             :show-close-icon="true"
             :block-scroll="false"

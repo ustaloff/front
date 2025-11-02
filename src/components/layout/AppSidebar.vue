@@ -28,7 +28,7 @@ const handleDrawerHide = () => {
     <div>
         <!-- Debug info -->
         <!-- Debug panel - remove in production -->
-        <div _v-if="false"
+        <div v-if="true"
              style="position: fixed; top: 100px; right: 10px; background: black; padding: 10px; border: 1px solid black; z-index: 9999;">
             Debug: isOpen={{ isOpen }}, isExpanded={{ isExpanded }}, isMobile={{ isMobile }}
             <br>

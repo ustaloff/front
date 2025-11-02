@@ -98,18 +98,7 @@ export function useSidebar() {
 
 // Утилитарная функция для переключения видимости
 export function toggleVisibility() {
-  const deviceStore = useDeviceStore()
-  
-  // Убеждаемся, что device store инициализирован
-  deviceStore.checkDevice()
-  
-  if (deviceStore.isMobile.value) {
-    // На мобильных просто переключаем видимость
-    sidebarState.isOpen = !sidebarState.isOpen
-  } else {
-    // На десктопе кнопка в header прячет/показывает сайдбар
-    sidebarState.isOpen = !sidebarState.isOpen
-  }
+  sidebarState.isOpen = !sidebarState.isOpen
 }
 
 // Утилитарная функция для закрытия сайдбара

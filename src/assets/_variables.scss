@@ -54,6 +54,12 @@ $container-padding-x: 15px;
 $sidebar-width: 16.5rem;
 $sidebar-minimized-width: 5.25rem;
 
+// CSS Custom Properties для синхронизации с JS
+:root {
+  --sidebar-width: #{$sidebar-width};
+  --sidebar-minimized-width: #{$sidebar-minimized-width};
+}
+
 // === BREAKPOINTS MAP ===
 //$_breakpoints: (
 //        xs: 0, // mobile

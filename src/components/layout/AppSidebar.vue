@@ -1,10 +1,20 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
+import {useDeviceStore} from '@/stores/device'
 import {useSidebar, toggleExpansion, closeSidebar, handleBeforeHide} from '@/composables/useSidebar'
 import {watch} from 'vue'
 
+import {computed} from 'vue'
+
 const auth = useAuthStore()
 const {isOpen, isExpanded, isMobile, sidebarState} = useSidebar()
+
+
+const deviceStore = useDeviceStore()
+// Доступные свойства и методы:
+console.log(deviceStore.isMobile)      // computed: boolean
+console.log(deviceStore.screenWidth)   // ref: number
+
 
 // Отслеживаем изменения состояния для отладки (можно убрать в продакшене)
 watch([isOpen, isExpanded, isMobile], ([newIsOpen, newIsExpanded, newIsMobile]) => {
@@ -27,10 +37,12 @@ const handleDrawerHide = () => {
 const onBeforeHide = () => {
     handleBeforeHide()
 }
+
+const edge = 1000;
 </script>
 
 <template>
-    <div 
+    <div
 
     >
         <!-- Debug info -->
@@ -40,20 +52,22 @@ const onBeforeHide = () => {
             Debug: isOpen={{ isOpen }}, isExpanded={{ isExpanded }}, isMobile={{ isMobile }}
             <br>
             <button @click="() => sidebarState.isOpen = !sidebarState.isOpen">Toggle Test</button>
+            <br>
+            {{ deviceStore.screenWidth }}
         </div>
 
         <Drawer
             v-model:visible="sidebarState.isOpen"
-            :modal="isMobile"
+            :modal="deviceStore.screenWidth < edge"
             :show-close-icon="true"
             :block-scroll="false"
-            :dismissable="isMobile"
+            :dismissable="deviceStore.screenWidth < edge"
             position="left"
             class="sidebar"
             :class="{
             'sidebar--expanded': isExpanded,
-            'sidebar--minimized': !isExpanded && !isMobile,
-            'sidebar--mobile': isMobile,
+            'sidebar--minimized': !isExpanded && !(deviceStore.screenWidth < edge),
+            'sidebar--mobile': deviceStore.screenWidth < edge,
             'sidebar--open': isOpen,
         }"
             @hide="onBeforeHide"

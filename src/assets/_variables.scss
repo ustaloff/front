@@ -46,6 +46,14 @@ $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
 $breakpoint-xl: 1200px;
 
+// Container
+$container-width: 1200px;
+$container-padding-x: 15px;
+
+// Sidebar dimensions
+$sidebar-width: 16.5rem;
+$sidebar-minimized-width: 5.25rem;
+
 // === BREAKPOINTS MAP ===
 //$_breakpoints: (
 //        xs: 0, // mobile
@@ -57,7 +65,6 @@ $breakpoint-xl: 1200px;
 //);
 
 $breakpoints: (
-        xxs: 0, // Базовые стили для самых маленьких экранов
         xs: 375px, // Стандартные мобильные экраны
         sm: 576px, // Ландшафтный режим смартфонов
         md: 768px, // Планшеты
@@ -65,3 +72,5 @@ $breakpoints: (
         xl: 1280px, // Десктопы
         xxl: 1440px // Широкоформатные мониторы
 );
+
+

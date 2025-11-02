@@ -1,6 +1,6 @@
 <template>
     <footer class="app-footer">
-        <div class="footer-content">
+        <div class="footer-content container">
             <p>&copy; 2024 Noname App. Все права защищены.</p>
             <div class="footer-links">
                 <a href="#">Правила</a>
@@ -17,14 +17,14 @@
 @use '@/assets/variables' as *;
 
 .app-footer {
-    background: $footer-bg;
-    color: $text-color-invert;
-    padding: 1rem 0;
+    background: var(--footer-background);
+    color: var(--footer-text-color);
+    //padding: 1rem 0;
     margin-top: auto;
 }
 
 .footer-content {
-    max-width: 1200px;
+    //max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;

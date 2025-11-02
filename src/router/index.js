@@ -13,7 +13,7 @@ const routes = [
         path: '/',
         name: 'main',
         component: Profile,
-        meta: {requiresAuth: true},
+        //meta: {requiresAuth: true},
     },
     {
         path: '/login',

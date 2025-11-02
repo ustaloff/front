@@ -10,7 +10,7 @@ const formatDate = (dateString) => {
 </script>
 
 <template>
-    <div v-if="auth.isAuthenticated">
+    <div class="container" v-if="auth.isAuthenticated">
         <h2>Профиль пользователя</h2>
         <div class="profile-info">
             <div class="info-card">
@@ -27,7 +27,7 @@ const formatDate = (dateString) => {
             </div>
         </div>
     </div>
-    <div v-else>
+    <div class="container" v-else>
         <h2>Доступ запрещен</h2>
         <p>Пожалуйста, войдите в систему для просмотра профиля.</p>
         <router-link to="/login" class="login-btn">Войти</router-link>

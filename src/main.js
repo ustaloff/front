@@ -6,9 +6,18 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import PrimeVue from 'primevue/config';
+import PrimeVue from 'primevue/config'
 import Preset from './presets/material'
-import Button from 'primevue/button';
+
+import Button from 'primevue/button'
+import FloatLabel from 'primevue/floatLabel'
+import IftaLabel from 'primevue/iftalabel'
+import InputText from 'primevue/inputText'
+import Select from 'primevue/select'
+import Card from 'primevue/card'
+import Drawer from 'primevue/drawer'
+import Dialog from 'primevue/dialog'
+import Toast from 'primevue/toast'
 
 const app = createApp(App)
 
@@ -20,7 +29,7 @@ app.use(PrimeVue, {
     theme: {
         preset: Preset,
         options: {
-            prefix: 'p',
+            prefix: '',
             cssLayer: {
                 name: 'prime',
                 order: 'reset, prime',
@@ -31,5 +40,13 @@ app.use(PrimeVue, {
 });
 
 app.component('Button', Button);
+app.component('FloatLabel', FloatLabel)
+app.component('IftaLabel', IftaLabel)
+app.component('InputText', InputText)
+app.component('Select', Select)
+app.component('Card', Card)
+app.component('Drawer', Drawer)
+app.component('Dialog', Dialog)
+app.component('Toast', Toast)
 
 app.mount('#app')

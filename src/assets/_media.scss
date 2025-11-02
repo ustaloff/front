@@ -1,14 +1,11 @@
-// Shared SCSS Mixins
+// === Shared SCSS Mixins ===
 @use 'sass:map';
-@use 'sass:math';
-@use 'sass:color';
 @use 'variables' as *;
-
-$footer-bg-test: red;
 
 // === Mixin: respond-from (mobile-first, min-width) ===
 @mixin respond-from($breakpoint) {
   $value: map.get($breakpoints, $breakpoint);
+
   @if $value != null {
     @media (min-width: $value) {
       @content;
@@ -21,6 +18,7 @@ $footer-bg-test: red;
 // === Mixin: respond-to (desktop-first, max-width) ===
 @mixin respond-to($breakpoint) {
   $value: map.get($breakpoints, $breakpoint);
+
   @if $value != null {
     // Немного уменьшаем, чтобы не пересекались границы с min-width
     @media (max-width: $value - 0.02px) {

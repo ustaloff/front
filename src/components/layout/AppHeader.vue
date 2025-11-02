@@ -1,17 +1,50 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
+import {useSidebar, toggleVisibility} from '@/composables/useSidebar'
+import {computed} from 'vue'
 
 const auth = useAuthStore()
+const {isOpen, isExpanded, isMobile} = useSidebar()
+
+// Обработчик клика по кнопке toggle
+const handleToggleClick = () => {
+  toggleVisibility()
+}
+
+// Определяем состояние кнопки в зависимости от устройства
+const isToggleActive = computed(() => {
+  return isOpen.value // На всех устройствах показываем состояние открыт/закрыт
+})
+
+// Определяем aria-label в зависимости от устройства и состояния
+const toggleAriaLabel = computed(() => {
+  if (isMobile.value) {
+    return isOpen.value ? 'Закрыть меню' : 'Открыть меню'
+  } else {
+    return isOpen.value ? 'Скрыть меню' : 'Показать меню'
+  }
+})
 </script>
 
 <template>
     <header class="app-header">
-        <div class="header-content">
+        <div class="header-content container">
+            <button 
+                class="toggle-button" 
+                @click="handleToggleClick"
+                :aria-label="toggleAriaLabel"
+            >
+                <span class="toggle-icon" :class="{ 'is-open': isToggleActive }">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
             <div class="logo">
                 <router-link to="/">Noname</router-link>
             </div>
             <nav class="main-nav">
-                <router-link _v-if="auth.user" to="/profile">Профиль</router-link>
+                <router-link v-if="auth.user" to="/profile">Профиль</router-link>
                 <router-link v-if="auth.user" to="/admin">Админ</router-link>
             </nav>
             <div class="auth-section">
@@ -37,17 +70,17 @@ const auth = useAuthStore()
 .app-header {
     background: $header-bg;
     color: $text-color-invert;
-    padding: 1rem 0;
+    //padding: 1rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
-    max-width: 1200px;
+    //max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: $spacing-md;
 }
 
 .logo a {
@@ -60,6 +93,7 @@ const auth = useAuthStore()
 .main-nav {
     display: flex;
     gap: 2rem;
+    margin-left: auto;
 }
 
 .main-nav a {
@@ -85,5 +119,55 @@ const auth = useAuthStore()
 .auth-links {
     display: flex;
     gap: 1rem;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: $spacing-sm;
+    border-radius: $radius-sm;
+    transition: background-color 0.3s ease;
+    
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    &:focus {
+        outline: 2px solid $secondary-color;
+        outline-offset: 2px;
+    }
+}
+
+.toggle-icon {
+    display: flex;
+    flex-direction: column;
+    width: 24px;
+    height: 18px;
+    justify-content: space-between;
+    
+    span {
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: $text-color-invert;
+        border-radius: 1px;
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+    
+    &.is-open {
+        span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+    }
 }
 </style>

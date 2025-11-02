@@ -1,20 +1,11 @@
 <template>
-    <main 
-        class="app-main main-content"
-        :class="{
-            'sidebar-expanded': isExpanded,
-            'sidebar-minimized': !isExpanded && !isMobile,
-            'sidebar-open': isOpen,
-        }"
-    >
+    <main class="app-main main-content">
         <slot/>
     </main>
 </template>
 
 <script setup>
-import {useSidebar} from '@/composables/useSidebar'
 
-const {isExpanded, isMobile, isOpen} = useSidebar()
 </script>
 
 <style lang="scss" scoped>

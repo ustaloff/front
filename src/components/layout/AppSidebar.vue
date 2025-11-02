@@ -1,6 +1,6 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
-import {useSidebar, toggleExpansion, closeSidebar} from '@/composables/useSidebar'
+import {useSidebar, toggleExpansion, closeSidebar, handleBeforeHide} from '@/composables/useSidebar'
 import {watch} from 'vue'
 
 const auth = useAuthStore()
@@ -22,10 +22,17 @@ const handleDrawerHide = () => {
     // На десктопе закрываем только по крестику (dismissable=false предотвращает закрытие по overlay)
     closeSidebar()
 }
+
+// 🔥 Вызывается ПЕРЕД началом анимации закрытия
+const onBeforeHide = () => {
+    handleBeforeHide()
+}
 </script>
 
 <template>
-    <div>
+    <div 
+
+    >
         <!-- Debug info -->
         <!-- Debug panel - remove in production -->
         <div v-if="true"
@@ -36,7 +43,7 @@ const handleDrawerHide = () => {
         </div>
 
         <Drawer
-            v-model:visible="sidebarState.isOpen"
+            v-model:visible="isOpen"
             :modal="isMobile"
             :show-close-icon="true"
             :block-scroll="false"
@@ -49,7 +56,7 @@ const handleDrawerHide = () => {
             'sidebar--mobile': isMobile,
             'sidebar--open': isOpen,
         }"
-            @hide="handleDrawerHide"
+            @hide="onBeforeHide"
         >
             <template #container>
                 <div class="sidebar__header">

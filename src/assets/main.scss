@@ -51,6 +51,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: var(--body-background);
   color: var(--body-text-color);
+  container-type: inline-size;
+  container-name: main-layout;
 
   &, #app {
     min-height: 100vh;
@@ -78,30 +80,48 @@ main {
   }
 }
 
-@media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width})) {//@TODO get real sidebar width from <html style="--sidebar-width: 200px">
+$additional-offset: 32px;
+
+/*@container main-layout (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + var(--sidebar-current-width) + #{$additional-offset})) {
   header, main, footer {
-    transition: all 0.3s ease;
+    padding-inline-start: 0;
+    transition: padding-inline-start 0.3s ease;
+  }
+
+  // 🔥 Используем data-attribute вместо :has()
+  body[data-sidebar-offset="true"] :where(header, main, footer) {
+    padding-inline-start: var(--sidebar-current-width);
+  }
+}*/
+
+@media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width})) {
+  header, main, footer {
+    padding-inline-start: 0;
+    transition: padding-inline-start 0.3s ease;
+  }
+
+  // 🔥 Используем data-attribute вместо :has()
+  body[data-sidebar-offset="true"]:not(:has(.sidebar--mobile)) :where(header, main, footer) {
+    padding-inline-start: calc(var(--sidebar-current-width) + #{$additional-offset});
+  }
+}
+
+
+/*@media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width})) {//@TODO get real sidebar width from <html style="--sidebar-width: 200px">
+  header, main, footer {
+    //transition: all 0.3s ease;
+    transition: padding-inline-start 0.3s ease;
   }
 
   //@TODO like in Main.vue
-  /*body:has(.sidebar--expanded.sidebar--open) :where(header, main, footer) {
+  body:has(.sidebar--expanded.sidebar--open) :where(header, main, footer) {
     padding-inline-start: calc(#{$sidebar-width});
   }
 
   body:has(.sidebar--minimized.sidebar--open) :where(header, main, footer) {
     padding-inline-start: calc(#{$sidebar-minimized-width});
-  }*/
-
-  body:has(.sidebar-expanded.sidebar-open) :where(header, main, footer) {
-    padding-inline-start: calc(#{$sidebar-width});
   }
-
-  body:has(.sidebar-minimized.sidebar-open) :where(header, main, footer) {
-    padding-inline-start: calc(#{$sidebar-minimized-width});
-  }
-
-  //main.sidebar--expanded.sidebar--open
-}
+}*/
 
 /*@include respond-from(md) {
   header, main, footer {

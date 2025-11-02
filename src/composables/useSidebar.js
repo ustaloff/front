@@ -1,13 +1,10 @@
+// composables/useSidebar.js
 import { reactive, computed, watch } from 'vue'
 import { useDeviceStore } from '@/stores/device'
 
-// Константа для идентификации сайдбара
 export const SIDEBAR = 'SIDEBAR'
-
-// Ключ для localStorage
 const STORAGE_KEY = 'sidebar-expanded'
 
-// Функция для загрузки состояния из localStorage
 const loadExpandedState = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -18,7 +15,6 @@ const loadExpandedState = () => {
   }
 }
 
-// Функция для сохранения состояния в localStorage
 const saveExpandedState = (isExpanded) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(isExpanded))
@@ -27,67 +23,87 @@ const saveExpandedState = (isExpanded) => {
   }
 }
 
-// Глобальное состояние сайдбара
+// 🔥 Функция для управления data-attribute на body
+const updateBodySidebarState = (shouldOffset, width) => {
+  if (shouldOffset) {
+    document.body.setAttribute('data-sidebar-offset', 'true')
+    document.body.style.setProperty('--sidebar-current-width', width)
+  } else {
+    document.body.removeAttribute('data-sidebar-offset')
+    document.body.style.removeProperty('--sidebar-current-width')
+  }
+}
+
 const sidebarState = reactive({
   isOpen: false,
-  isExpanded: loadExpandedState(), // Загружаем сохраненное состояние
+  isExpanded: loadExpandedState(),
   initialized: false
 })
 
-// Основная функция композабла
 export function useSidebar() {
   const deviceStore = useDeviceStore()
-  
-  // Инициализация состояния в зависимости от типа устройства
+
   const initializeSidebar = () => {
     if (sidebarState.initialized) return
-    
-    // Убеждаемся, что device store инициализирован
+
     deviceStore.checkDevice()
-    
+
     if (deviceStore.isMobile.value) {
-      // На мобильных устройствах сайдбар закрыт по умолчанию
       sidebarState.isOpen = false
       sidebarState.isExpanded = false
+      updateBodySidebarState(false, '0px')
     } else {
-      // На десктопе сайдбар открыт в маленьком состоянии по умолчанию
       sidebarState.isOpen = true
-      // isExpanded уже загружено из localStorage при создании sidebarState (по умолчанию false - маленький)
+      // 🔥 Сразу устанавливаем data-attribute
+      const width = sidebarState.isExpanded ? '280px' : '64px' // Ваши значения
+      updateBodySidebarState(true, width)
     }
-    
+
     sidebarState.initialized = true
   }
-  
-  // Инициализируем при первом вызове
+
   initializeSidebar()
-  
-  // Отслеживаем изменения expansion состояния для сохранения
+
+  // 🔥 При изменении isExpanded обновляем ширину
   watch(() => sidebarState.isExpanded, (newExpanded) => {
     if (!deviceStore.isMobile.value) {
       saveExpandedState(newExpanded)
+      // Обновляем ширину если sidebar открыт
+      if (sidebarState.isOpen) {
+        const width = newExpanded ? '280px' : '64px'
+        updateBodySidebarState(true, width)
+      }
     }
   })
-  
-  // Отслеживаем изменения типа устройства и адаптируем поведение
+
+  // 🔥 При открытии сразу применяем offset
+  watch(() => sidebarState.isOpen, (isOpen) => {
+    if (isOpen) {
+      const width = sidebarState.isExpanded ? '280px' : '64px'
+      updateBodySidebarState(true, width)
+    }
+    // При закрытии НЕ трогаем - будет обработано в handleBeforeHide
+  })
+
   watch(() => deviceStore.isMobile.value, (newIsMobile, oldIsMobile) => {
     if (newIsMobile !== oldIsMobile) {
       if (newIsMobile) {
-        // Переход на мобильное устройство - закрываем сайдбар
         sidebarState.isOpen = false
         sidebarState.isExpanded = false
+        updateBodySidebarState(false, '0px')
       } else {
-        // Переход на десктоп - открываем сайдбар и восстанавливаем сохраненное состояние expansion
         sidebarState.isOpen = true
         sidebarState.isExpanded = loadExpandedState()
+        const width = sidebarState.isExpanded ? '280px' : '64px'
+        updateBodySidebarState(true, width)
       }
     }
   }, { immediate: false })
-  
-  // Computed свойства для удобного доступа
+
   const isOpen = computed(() => sidebarState.isOpen)
   const isExpanded = computed(() => sidebarState.isExpanded)
   const isMobile = computed(() => deviceStore.isMobile)
-  
+
   return {
     isOpen,
     isExpanded,
@@ -96,24 +112,25 @@ export function useSidebar() {
   }
 }
 
-// Утилитарная функция для переключения видимости
 export function toggleVisibility() {
   sidebarState.isOpen = !sidebarState.isOpen
 }
 
-// Утилитарная функция для закрытия сайдбара
 export function closeSidebar() {
   sidebarState.isOpen = false
 }
 
-// Утилитарная функция для переключения развернутости (только для десктопа)
 export function toggleExpansion() {
   const deviceStore = useDeviceStore()
-  
-  // Expansion работает только на десктопе
+
   if (!deviceStore.isMobile.value) {
     sidebarState.isExpanded = !sidebarState.isExpanded
-    // Сохраняем состояние expansion
     saveExpandedState(sidebarState.isExpanded)
   }
+}
+
+// 🔥 НОВАЯ функция: вызывается ПЕРЕД началом анимации закрытия
+export function handleBeforeHide() {
+  // Убираем offset ВМЕСТЕ с началом анимации закрытия
+  updateBodySidebarState(false, '0px')
 }

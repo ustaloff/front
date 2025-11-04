@@ -4,8 +4,76 @@ import {ref, computed, onUnmounted} from 'vue'
 export const useDeviceStore = defineStore('device', () => {
     const screenWidth = ref(window.innerWidth)
 
-    // Определяем мобильное устройство по breakpoint 801px
-    const isMobile = computed(() => screenWidth.value < 801)
+    // Реактивное свойство для хранения брейкпоинтов
+    const breakpoints = ref({})
+
+
+    // Computed свойства для каждого брейкпоинта
+    const isXs = computed(() => {
+        const bp = breakpoints.value
+        return screenWidth.value >= bp.xs && screenWidth.value < bp.sm
+    })
+
+    const isSm = computed(() => {
+        const bp = breakpoints.value
+        return screenWidth.value >= bp.sm && screenWidth.value < bp.md
+    })
+
+    const isMd = computed(() => {
+        const bp = breakpoints.value
+        return screenWidth.value >= bp.md && screenWidth.value < bp.lg
+    })
+
+    const isLg = computed(() => {
+        const bp = breakpoints.value
+        return screenWidth.value >= bp.lg && screenWidth.value < bp.xl
+    })
+
+    const isXl = computed(() => {
+        const bp = breakpoints.value
+        return screenWidth.value >= bp.xl && screenWidth.value < bp.xxl
+    })
+
+    const isXxl = computed(() => {
+        const bp = breakpoints.value
+        return screenWidth.value >= bp.xxl
+    })
+
+    // Computed свойство для получения названия активного брейкпоинта
+    const currentBreakpoint = computed(() => {
+        if (isXs.value) return 'xs'
+        if (isSm.value) return 'sm'
+        if (isMd.value) return 'md'
+        if (isLg.value) return 'lg'
+        if (isXl.value) return 'xl'
+        if (isXxl.value) return 'xxl'
+        // Fallback для случаев когда ширина меньше xs
+        return 'xs'
+    })
+
+    // Функция для загрузки брейкпоинтов из CSS переменных
+    const loadBreakpointsFromCSS = () => {
+        const style = getComputedStyle(document.documentElement)
+        return {
+            xs: parseInt(style.getPropertyValue('--breakpoint-xs')) || 375,
+            sm: parseInt(style.getPropertyValue('--breakpoint-sm')) || 576,
+            md: parseInt(style.getPropertyValue('--breakpoint-md')) || 768,
+            lg: parseInt(style.getPropertyValue('--breakpoint-lg')) || 1024,
+            xl: parseInt(style.getPropertyValue('--breakpoint-xl')) || 1280,
+            xxl: parseInt(style.getPropertyValue('--breakpoint-xxl')) || 1440
+        }
+    }
+
+    // Метод для инициализации брейкпоинтов
+    const initBreakpoints = () => {
+        breakpoints.value = loadBreakpointsFromCSS()
+    }
+
+    // Порядок брейкпоинтов для утилитарных методов
+    const BREAKPOINT_ORDER = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl']
+
+    // Инициализируем брейкпоинты при создании store
+    initBreakpoints()
 
     let resizeTimeout = null
     let listenersInitialized = false
@@ -32,6 +100,9 @@ export const useDeviceStore = defineStore('device', () => {
     // Инициализация слушателей событий
     const initResizeListener = () => {
         if (!listenersInitialized) {
+            // Инициализируем брейкпоинты при первом запуске
+            initBreakpoints()
+
             window.addEventListener('resize', debouncedCheckDevice)
             window.addEventListener('orientationchange', handleOrientationChange)
             listenersInitialized = true
@@ -51,6 +122,50 @@ export const useDeviceStore = defineStore('device', () => {
         }
     }
 
+    // Утилитарные методы для работы с брейкпоинтами
+    const isBreakpointUp = (breakpoint) => {
+        if (!BREAKPOINT_ORDER.includes(breakpoint)) {
+            console.warn(`Invalid breakpoint: ${breakpoint}`)
+            return false
+        }
+
+        const currentBpIndex = BREAKPOINT_ORDER.findIndex(bpName => currentBreakpoint.value === bpName)
+        const targetBpIndex = BREAKPOINT_ORDER.findIndex(bpName => bpName === breakpoint)
+
+        return currentBpIndex >= targetBpIndex
+    }
+
+    const isBreakpointDown = (breakpoint) => {
+        if (!BREAKPOINT_ORDER.includes(breakpoint)) {
+            console.warn(`Invalid breakpoint: ${breakpoint}`)
+            return false
+        }
+
+        const bp = breakpoints.value
+        return screenWidth.value < bp[breakpoint]
+    }
+
+    const isBreakpointBetween = (min, max) => {
+        if (!BREAKPOINT_ORDER.includes(min) || !BREAKPOINT_ORDER.includes(max)) {
+            console.warn(`Invalid breakpoint range: ${min} - ${max}`)
+            return false
+        }
+
+        const minIndex = BREAKPOINT_ORDER.findIndex(bp => bp === min)
+        const maxIndex = BREAKPOINT_ORDER.findIndex(bp => bp === max)
+
+        if (minIndex > maxIndex) {
+            console.warn(`Invalid breakpoint range: ${min} should be smaller than ${max}`)
+            return false
+        }
+
+        const bp = breakpoints.value
+        return screenWidth.value >= bp[min] && screenWidth.value < bp[max]
+    }
+
+    // Определяем мобильное устройство используя breakpoint систему (< 768px)
+    const isMobile = computed(() => isBreakpointDown('md'))
+
     // Очистка при размонтировании (для случаев, когда store уничтожается)
     onUnmounted(() => {
         cleanupListeners()
@@ -59,8 +174,20 @@ export const useDeviceStore = defineStore('device', () => {
     return {
         screenWidth,
         isMobile,
+        breakpoints,
+        isXs,
+        isSm,
+        isMd,
+        isLg,
+        isXl,
+        isXxl,
+        currentBreakpoint,
         checkDevice,
         initResizeListener,
-        cleanupListeners
+        initBreakpoints,
+        cleanupListeners,
+        isBreakpointUp,
+        isBreakpointDown,
+        isBreakpointBetween
     }
 })

@@ -1,6 +1,6 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
-import {useSidebar, toggleVisibility, toggleExpansion} from '@/composables/useSidebar'
+import {useSidebar, toggleVisibility, toggleSidebar} from '@/composables/useSidebar'
 import {computed} from 'vue'
 
 const auth = useAuthStore()
@@ -8,13 +8,17 @@ const {isOpen, isExpanded, isMobile} = useSidebar()
 
 // Обработчик клика по кнопке toggle
 const handleToggleClick = () => {
-    toggleVisibility()
-    //toggleExpansion()
+    //toggleVisibility()
+    toggleSidebar()
 }
 
 // Определяем состояние кнопки в зависимости от устройства
-const isToggleActive = computed(() => {
+/*const isToggleActive = computed(() => {
     return isOpen.value // На всех устройствах показываем состояние открыт/закрыт
+})*/
+
+const isToggleActive = computed(() => {
+    return isMobile.value ? isOpen.value : isExpanded.value
 })
 
 // Определяем aria-label в зависимости от устройства и состояния
@@ -22,7 +26,7 @@ const toggleAriaLabel = computed(() => {
     if (isMobile.value) {
         return isOpen.value ? 'Закрыть меню' : 'Открыть меню'
     } else {
-        return isOpen.value ? 'Скрыть меню' : 'Показать меню'
+        return isExpanded.value ? 'Скрыть меню' : 'Показать меню'
     }
 })
 </script>

@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 // Shared SCSS Variables - синхронизированы с PrimeVue темой
 $body-bg: #d1fae5; // соответствует brand.surface.100
 $main-bg: #ffffff;
@@ -70,12 +72,12 @@ $sidebar-minimized-width: 5.25rem;
   --sidebar-minimized-width: #{$sidebar-minimized-width};
   
   // Breakpoint variables для синхронизации с device store
-  --breakpoint-xs: #{map-get($breakpoints, xs)};
-  --breakpoint-sm: #{map-get($breakpoints, sm)};
-  --breakpoint-md: #{map-get($breakpoints, md)};
-  --breakpoint-lg: #{map-get($breakpoints, lg)};
-  --breakpoint-xl: #{map-get($breakpoints, xl)};
-  --breakpoint-xxl: #{map-get($breakpoints, xxl)};
+  --breakpoint-xs: #{map.get($breakpoints, xs)};
+  --breakpoint-sm: #{map.get($breakpoints, sm)};
+  --breakpoint-md: #{map.get($breakpoints, md)};
+  --breakpoint-lg: #{map.get($breakpoints, lg)};
+  --breakpoint-xl: #{map.get($breakpoints, xl)};
+  --breakpoint-xxl: #{map.get($breakpoints, xxl)};
 }
 
 

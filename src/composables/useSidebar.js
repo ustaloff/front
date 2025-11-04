@@ -137,12 +137,22 @@ export function useSidebar(breakpoint) {
         }
     }
 
+    const toggleSidebar = () => {
+        if (isMobile.value) {
+            sidebarState.isOpen = !sidebarState.isOpen
+        } else {
+            sidebarState.isExpanded = !sidebarState.isExpanded
+            saveExpandedState(sidebarState.isExpanded)
+        }
+    }
+
     return {
         isOpen,
         isExpanded,
         isMobile,
         sidebarState,
-        toggleExpansion
+        toggleExpansion,
+        toggleSidebar
     }
 }
 
@@ -158,6 +168,15 @@ export function closeSidebar() {
 // Использует sidebarState.isMobile (текущую активную логику)
 export function toggleExpansion() {
     if (!sidebarState.isMobile) {
+        sidebarState.isExpanded = !sidebarState.isExpanded
+        saveExpandedState(sidebarState.isExpanded)
+    }
+}
+
+export function toggleSidebar() {
+    if (sidebarState.isMobile) {
+        sidebarState.isOpen = !sidebarState.isOpen
+    } else {
         sidebarState.isExpanded = !sidebarState.isExpanded
         saveExpandedState(sidebarState.isExpanded)
     }

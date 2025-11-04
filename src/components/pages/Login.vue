@@ -24,10 +24,22 @@ const submit = async () => {
             <h2>Вход в систему</h2>
             <form @submit.prevent="submit">
                 <div class="form-group">
-                    <input v-model="email" type="email" placeholder="Email" required/>
+                    <input 
+                        v-model="email" 
+                        type="email" 
+                        placeholder="Email" 
+                        autocomplete="email"
+                        required
+                    />
                 </div>
                 <div class="form-group">
-                    <input v-model="password" type="password" placeholder="Пароль" required/>
+                    <input 
+                        v-model="password" 
+                        type="password" 
+                        placeholder="Пароль" 
+                        autocomplete="current-password"
+                        required
+                    />
                 </div>
                 <button type="submit" class="submit-btn">Войти</button>
             </form>

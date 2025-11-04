@@ -1,10 +1,10 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
-import {useSidebar, toggleExpansion, closeSidebar, handleBeforeHide} from '@/composables/useSidebar'
+import {useSidebar, closeSidebar, handleBeforeHide} from '@/composables/useSidebar'
 import {watch} from 'vue'
 
 const auth = useAuthStore()
-const {isOpen, isExpanded, isMobile, sidebarState} = useSidebar()
+const {isOpen, isExpanded, isMobile, sidebarState, toggleExpansion} = useSidebar('lg')
 
 // Обработчик клика по логотипу для переключения expansion
 const handleLogoClick = () => {
@@ -87,12 +87,7 @@ const onBeforeHide = () => {
                                     <span>Профиль</span>
                                 </router-link>
                             </li>
-                            <li v-if="auth.user">
-                                <router-link to="/user-logs">
-                                    <span class="icon">📜</span>
-                                    <span>User Logs</span>
-                                </router-link>
-                            </li>
+
                             <li v-if="auth.user">
                                 <router-link to="/admin">
                                     <span class="icon">⚙️</span>
@@ -104,7 +99,7 @@ const onBeforeHide = () => {
 
                     <div v-if="auth.user" class="sidebar__user">
                         <div class="user-info">
-                            <h4><span>Баланс</span></h4>
+                            <h4><span>{{ auth.displayName }}</span></h4>
                             <p class="balance"><span>1000 ₽</span></p>
                         </div>
                     </div>

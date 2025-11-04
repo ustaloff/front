@@ -1,14 +1,13 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
-import {useSidebar, toggleVisibility, toggleSidebar} from '@/composables/useSidebar'
+import {useSidebar, toggleVisibility} from '@/composables/useSidebar'
 import {computed} from 'vue'
 
 const auth = useAuthStore()
-const {isOpen, isExpanded, isMobile} = useSidebar()
+const {isOpen, isExpanded, isMobile, toggleSidebar} = useSidebar()
 
 // Обработчик клика по кнопке toggle
 const handleToggleClick = () => {
-    //toggleVisibility()
     toggleSidebar()
 }
 

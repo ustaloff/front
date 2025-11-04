@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from './stores/auth'
 
 import PrimeVue from 'primevue/config'
 import Preset from './presets/material'
@@ -23,6 +24,13 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+
+// Инициализируем auth store для получения CSRF токена и проверки сохраненной сессии
+// Делаем это асинхронно, чтобы не блокировать запуск приложения
+const authStore = useAuthStore()
+authStore.initialize().catch(error => {
+    console.warn('Auth store initialization failed:', error)
+})
 
 app.use(PrimeVue, {
     ripple: true,

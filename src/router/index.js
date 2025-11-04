@@ -7,6 +7,7 @@ import Profile from '@/components/pages/Profile.vue'
 import Dashboard from '@/components/pages/Dashboard.vue'
 import ClampGenerator from '@/components/pages/ClampGenerator.vue'
 import CSSFilterGenerator from '@/components/pages/CSSFilterGenerator.vue'
+import DeviceBreakpointDemo from '@/components/DeviceBreakpointDemo.vue'
 
 const routes = [
     {
@@ -48,6 +49,11 @@ const routes = [
         path: '/css-filter-generator',
         name: 'css-filter-generator',
         component: CSSFilterGenerator,
+    },
+    {
+        path: '/device-breakpoint-demo',
+        name: 'device-breakpoint-demo',
+        component: DeviceBreakpointDemo,
     },
 ]
 

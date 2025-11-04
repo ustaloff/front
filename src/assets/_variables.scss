@@ -71,7 +71,7 @@ $sidebar-minimized-width: 5.25rem;
   --sidebar-width: #{$sidebar-width};
   --sidebar-minimized-width: #{$sidebar-minimized-width};
   
-  // Breakpoint variables для синхронизации с device store
+  // Breakpoints - единый источник истины
   --breakpoint-xs: #{map.get($breakpoints, xs)};
   --breakpoint-sm: #{map.get($breakpoints, sm)};
   --breakpoint-md: #{map.get($breakpoints, md)};

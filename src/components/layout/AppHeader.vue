@@ -1,6 +1,6 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
-import {useSidebar, toggleVisibility} from '@/composables/useSidebar'
+import {useSidebar, toggleVisibility, toggleExpansion} from '@/composables/useSidebar'
 import {computed} from 'vue'
 
 const auth = useAuthStore()
@@ -8,29 +8,30 @@ const {isOpen, isExpanded, isMobile} = useSidebar()
 
 // Обработчик клика по кнопке toggle
 const handleToggleClick = () => {
-  toggleVisibility()
+    toggleVisibility()
+    //toggleExpansion()
 }
 
 // Определяем состояние кнопки в зависимости от устройства
 const isToggleActive = computed(() => {
-  return isOpen.value // На всех устройствах показываем состояние открыт/закрыт
+    return isOpen.value // На всех устройствах показываем состояние открыт/закрыт
 })
 
 // Определяем aria-label в зависимости от устройства и состояния
 const toggleAriaLabel = computed(() => {
-  if (isMobile.value) {
-    return isOpen.value ? 'Закрыть меню' : 'Открыть меню'
-  } else {
-    return isOpen.value ? 'Скрыть меню' : 'Показать меню'
-  }
+    if (isMobile.value) {
+        return isOpen.value ? 'Закрыть меню' : 'Открыть меню'
+    } else {
+        return isOpen.value ? 'Скрыть меню' : 'Показать меню'
+    }
 })
 </script>
 
 <template>
     <header class="app-header">
         <div class="header-content container">
-            <button 
-                class="toggle-button" 
+            <button
+                class="toggle-button"
                 @click="handleToggleClick"
                 :aria-label="toggleAriaLabel"
             >
@@ -128,11 +129,11 @@ const toggleAriaLabel = computed(() => {
     padding: $spacing-sm;
     border-radius: $radius-sm;
     transition: background-color 0.3s ease;
-    
+
     &:hover {
         background-color: rgba(255, 255, 255, 0.1);
     }
-    
+
     &:focus {
         outline: 2px solid $secondary-color;
         outline-offset: 2px;
@@ -145,7 +146,7 @@ const toggleAriaLabel = computed(() => {
     width: 24px;
     height: 18px;
     justify-content: space-between;
-    
+
     span {
         display: block;
         height: 2px;
@@ -155,16 +156,16 @@ const toggleAriaLabel = computed(() => {
         transition: all 0.3s ease;
         transform-origin: center;
     }
-    
+
     &.is-open {
         span:nth-child(1) {
             transform: rotate(45deg) translate(6px, 6px);
         }
-        
+
         span:nth-child(2) {
             opacity: 0;
         }
-        
+
         span:nth-child(3) {
             transform: rotate(-45deg) translate(6px, -6px);
         }

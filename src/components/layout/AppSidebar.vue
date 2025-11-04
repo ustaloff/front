@@ -1,25 +1,10 @@
 <script setup>
 import {useAuthStore} from '@/stores/auth'
-import {useDeviceStore} from '@/stores/device'
 import {useSidebar, toggleExpansion, closeSidebar, handleBeforeHide} from '@/composables/useSidebar'
 import {watch} from 'vue'
 
-import {computed} from 'vue'
-
 const auth = useAuthStore()
 const {isOpen, isExpanded, isMobile, sidebarState} = useSidebar()
-
-
-const deviceStore = useDeviceStore()
-// Доступные свойства и методы:
-console.log(deviceStore.isMobile)      // computed: boolean
-console.log(deviceStore.screenWidth)   // ref: number
-
-
-// Отслеживаем изменения состояния для отладки (можно убрать в продакшене)
-watch([isOpen, isExpanded, isMobile], ([newIsOpen, newIsExpanded, newIsMobile]) => {
-    // console.log('AppSidebar state changed:', { isOpen: newIsOpen, isExpanded: newIsExpanded, isMobile: newIsMobile })
-}, {immediate: true})
 
 // Обработчик клика по логотипу для переключения expansion
 const handleLogoClick = () => {
@@ -37,37 +22,22 @@ const handleDrawerHide = () => {
 const onBeforeHide = () => {
     handleBeforeHide()
 }
-
-const edge = 1000;
 </script>
 
 <template>
-    <div
-
-    >
-        <!-- Debug info -->
-        <!-- Debug panel - remove in production -->
-        <div v-if="true"
-             style="position: fixed; top: 100px; right: 10px; background: black; padding: 10px; border: 1px solid black; z-index: 9999;">
-            Debug: isOpen={{ isOpen }}, isExpanded={{ isExpanded }}, isMobile={{ isMobile }}
-            <br>
-            <button @click="() => sidebarState.isOpen = !sidebarState.isOpen">Toggle Test</button>
-            <br>
-            {{ deviceStore.screenWidth }}
-        </div>
-
+    <div>
         <Drawer
             v-model:visible="sidebarState.isOpen"
-            :modal="deviceStore.screenWidth < edge"
+            :modal="isMobile"
             :show-close-icon="true"
             :block-scroll="false"
-            :dismissable="deviceStore.screenWidth < edge"
+            :dismissable="isMobile"
             position="left"
             class="sidebar"
             :class="{
             'sidebar--expanded': isExpanded,
-            'sidebar--minimized': !isExpanded && !(deviceStore.screenWidth < edge),
-            'sidebar--mobile': deviceStore.screenWidth < edge,
+            'sidebar--minimized': !isExpanded && !isMobile,
+            'sidebar--mobile': isMobile,
             'sidebar--open': isOpen,
         }"
             @hide="onBeforeHide"
@@ -103,6 +73,12 @@ const edge = 1000;
                                 <router-link to="/css-filter-generator">
                                     <span class="icon">🎨</span>
                                     <span>CSS Filter Generator</span>
+                                </router-link>
+                            </li>
+                            <li>
+                                <router-link to="/device-breakpoint-demo">
+                                    <span class="icon">📱</span>
+                                    <span>Device Breakpoints</span>
                                 </router-link>
                             </li>
                             <li v-if="auth.user">

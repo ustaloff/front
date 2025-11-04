@@ -50,18 +50,28 @@ const updateBodySidebarState = (shouldOffset, width) => {
 const sidebarState = reactive({
     isOpen: false,
     isExpanded: loadExpandedState(),
-    initialized: false
+    initialized: false,
+    isMobile: false
 })
 
-export function useSidebar() {
+export function useSidebar(breakpoint) {
     const deviceStore = useDeviceStore()
+
+    // Если параметр не передан - используем общий стандарт deviceStore.isMobile
+    // Если передан - создаем кастомный isMobile на основе переданного breakpoint
+    const isMobile = breakpoint
+        ? computed(() => deviceStore.isBreakpointDown(breakpoint))
+        : computed(() => deviceStore.isMobile)
 
     const initializeSidebar = () => {
         if (sidebarState.initialized) return
 
         deviceStore.checkDevice()
 
-        if (deviceStore.isMobile.value) {
+        // Обновляем isMobile в sidebarState
+        sidebarState.isMobile = isMobile.value
+
+        if (isMobile.value) {
             sidebarState.isOpen = false
             sidebarState.isExpanded = false
             updateBodySidebarState(false, '0px')
@@ -79,7 +89,7 @@ export function useSidebar() {
 
     // 🔥 При изменении isExpanded обновляем ширину
     watch(() => sidebarState.isExpanded, (newExpanded) => {
-        if (!deviceStore.isMobile.value) {
+        if (!isMobile.value) {
             saveExpandedState(newExpanded)
             // Обновляем ширину если sidebar открыт
             if (sidebarState.isOpen) {
@@ -98,8 +108,11 @@ export function useSidebar() {
         // При закрытии НЕ трогаем - будет обработано в handleBeforeHide
     })
 
-    watch(() => deviceStore.isMobile.value, (newIsMobile, oldIsMobile) => {
+    watch(() => isMobile.value, (newIsMobile, oldIsMobile) => {
         if (newIsMobile !== oldIsMobile) {
+            // Обновляем isMobile в sidebarState
+            sidebarState.isMobile = newIsMobile
+
             if (newIsMobile) {
                 sidebarState.isOpen = false
                 sidebarState.isExpanded = false
@@ -115,13 +128,21 @@ export function useSidebar() {
 
     const isOpen = computed(() => sidebarState.isOpen)
     const isExpanded = computed(() => sidebarState.isExpanded)
-    const isMobile = computed(() => deviceStore.isMobile)
+
+    // Локальная функция toggleExpansion, использующая локальный isMobile
+    const toggleExpansion = () => {
+        if (!isMobile.value) {
+            sidebarState.isExpanded = !sidebarState.isExpanded
+            saveExpandedState(sidebarState.isExpanded)
+        }
+    }
 
     return {
         isOpen,
         isExpanded,
         isMobile,
-        sidebarState
+        sidebarState,
+        toggleExpansion
     }
 }
 
@@ -133,10 +154,10 @@ export function closeSidebar() {
     sidebarState.isOpen = false
 }
 
+// Standalone toggleExpansion для обратной совместимости
+// Использует sidebarState.isMobile (текущую активную логику)
 export function toggleExpansion() {
-    const deviceStore = useDeviceStore()
-
-    if (!deviceStore.isMobile.value) {
+    if (!sidebarState.isMobile) {
         sidebarState.isExpanded = !sidebarState.isExpanded
         saveExpandedState(sidebarState.isExpanded)
     }

@@ -40,7 +40,17 @@ $radius-sm: 4px;
 $radius-md: 8px;
 $radius-lg: 12px;
 
-// Breakpoints
+// Breakpoints Map - должен быть определен до использования в CSS custom properties
+$breakpoints: (
+        xs: 375px, // Стандартные мобильные экраны
+        sm: 576px, // Ландшафтный режим смартфонов
+        md: 768px, // Планшеты
+        lg: 1024px, // Ноутбуки
+        xl: 1280px, // Десктопы
+        xxl: 1440px // Широкоформатные мониторы
+);
+
+// Legacy breakpoint variables (для обратной совместимости)
 $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
@@ -58,25 +68,16 @@ $sidebar-minimized-width: 5.25rem;
 :root {
   --sidebar-width: #{$sidebar-width};
   --sidebar-minimized-width: #{$sidebar-minimized-width};
+  
+  // Breakpoint variables для синхронизации с device store
+  --breakpoint-xs: #{map-get($breakpoints, xs)};
+  --breakpoint-sm: #{map-get($breakpoints, sm)};
+  --breakpoint-md: #{map-get($breakpoints, md)};
+  --breakpoint-lg: #{map-get($breakpoints, lg)};
+  --breakpoint-xl: #{map-get($breakpoints, xl)};
+  --breakpoint-xxl: #{map-get($breakpoints, xxl)};
 }
 
-// === BREAKPOINTS MAP ===
-//$_breakpoints: (
-//        xs: 0, // mobile
-//        sm: 576px, // small tablets
-//        md: 768px, // tablets
-//        lg: 1024px, // small desktops
-//        xl: 1280px, // large desktops
-//        xxl: 1440px // full HD / widescreen
-//);
 
-$breakpoints: (
-        xs: 375px, // Стандартные мобильные экраны
-        sm: 576px, // Ландшафтный режим смартфонов
-        md: 768px, // Планшеты
-        lg: 1024px, // Ноутбуки
-        xl: 1280px, // Десктопы
-        xxl: 1440px // Широкоформатные мониторы
-);
 
 

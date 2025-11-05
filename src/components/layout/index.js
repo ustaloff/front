@@ -1,4 +1,4 @@
-export {default as AppHeader} from './AppHeader.vue'
-export {default as AppSidebar} from './AppSidebar.vue'
-export {default as AppMain} from './AppMain.vue'
-export {default as AppFooter} from './AppFooter.vue'
+export {default as Header} from './Header.vue'
+export {default as Footer} from './Footer.vue'
+export {default as Sidebar} from './Sidebar.vue'
+export {default as Main} from './Main.vue'

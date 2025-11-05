@@ -50,7 +50,7 @@ const onBeforeHide = () => {
                         @click="handleLogoClick"
                         :aria-label="isExpanded ? 'Свернуть меню' : 'Развернуть меню'"
                     >
-                        <span class="logo-text">Noname</span>
+                        <span class="logo-text">CodeCraftPro</span>
                     </a>
                 </div>
 

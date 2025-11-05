@@ -3,7 +3,7 @@ import {RouterView} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
 import {useDeviceStore} from '@/stores/device'
 import {onMounted, onUnmounted} from 'vue'
-import {AppHeader, AppSidebar, AppMain, AppFooter} from '@/components/layout'
+import {Header, Sidebar, Main, Footer} from '@/components/layout'
 
 const auth = useAuthStore()
 const deviceStore = useDeviceStore()
@@ -13,7 +13,7 @@ onMounted(() => {
     if (auth.token && !auth.user) {
         auth.fetchUser()
     }
-    
+
     // Инициализируем определение устройства
     deviceStore.checkDevice()
     // Инициализируем слушатели событий
@@ -27,10 +27,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <AppHeader/>
-    <AppSidebar/>
-    <AppMain>
+    <Header/>
+    <Sidebar/>
+    <Main>
         <RouterView/>
-    </AppMain>
-    <AppFooter/>
+    </Main>
+    <Footer/>
 </template>

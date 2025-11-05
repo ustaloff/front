@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Manual Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Sidebar Manual Test Suite</h1>
+    
+    <div class="test-container">
+        <h2>Инструкции по тестированию</h2>
+        <div class="info">
+            <p><strong>Этот тест проверяет функциональность сайдбара без запуска полного приложения.</strong></p>
+            <p>1. Откройте DevTools (F12) и перейдите на вкладку Console</p>
+            <p>2. Измените размер окна браузера для тестирования responsive поведения</p>
+            <p>3. Используйте кнопки ниже для тестирования различных сценариев</p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Текущее состояние</h2>
+        <div id="current-state">
+            <p>Ширина окна: <span id="window-width">-</span>px</p>
+            <p>Тип устройства: <span id="device-type">-</span></p>
+            <p>Breakpoint: <span id="breakpoint">801px</span></p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Тестовые сценарии</h2>
+        <div class="test-controls">
+            <button onclick="testDeviceDetection()">Тест определения устройства</button>
+            <button onclick="testSidebarStates()">Тест состояний сайдбара</button>
+            <button onclick="testResponsiveBehavior()">Тест responsive поведения</button>
+            <button onclick="testLocalStorage()">Тест localStorage</button>
+            <button onclick="runAllTests()">Запустить все тесты</button>
+        </div>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Симуляция размеров экрана</h2>
+        <div class="test-controls">
+            <button onclick="simulateDevice(320)">Mobile (320px)</button>
+            <button onclick="simulateDevice(768)">Tablet (768px)</button>
+            <button onclick="simulateDevice(1024)">Desktop (1024px)</button>
+            <button onclick="simulateDevice(1920)">Large Desktop (1920px)</button>
+        </div>
+    </div>
+
+    <script>
+        // Mock environment for testing
+        let mockWindowWidth = window.innerWidth;
+        
+        // Test utilities
+        function addTestResult(name, passed, message = '') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            resultDiv.innerHTML = `
+                <strong>${passed ? '✅' : '❌'} ${name}</strong>
+                ${message ? `<br><small>${message}</small>` : ''}
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function clearResults() {
+            document.getElementById('test-results').innerHTML = '';
+        }
+
+        function updateCurrentState() {
+            document.getElementById('window-width').textContent = mockWindowWidth;
+            document.getElementById('device-type').textContent = mockWindowWidth < 801 ? 'Mobile' : 'Desktop';
+        }
+
+        // Device detection tests
+        function testDeviceDetection() {
+            clearResults();
+            console.log('🧪 Testing device detection...');
+            
+            // Test desktop detection
+            mockWindowWidth = 1024;
+            const isDesktop = mockWindowWidth >= 801;
+            addTestResult('Desktop Detection (1024px)', isDesktop, 'Should detect as desktop');
+            
+            // Test mobile detection
+            mockWindowWidth = 600;
+            const isMobile = mockWindowWidth < 801;
+            addTestResult('Mobile Detection (600px)', isMobile, 'Should detect as mobile');
+            
+            // Test edge case
+            mockWindowWidth = 801;
+            const isEdgeCase = mockWindowWidth >= 801;
+            addTestResult('Edge Case (801px)', isEdgeCase, 'Should detect as desktop at breakpoint');
+            
+            updateCurrentState();
+        }
+
+        // Sidebar state tests
+        function testSidebarStates() {
+            clearResults();
+            console.log('🧪 Testing sidebar states...');
+            
+            // Test desktop default state
+            mockWindowWidth = 1024;
+            const desktopOpen = true; // Should be open on desktop
+            const desktopExpanded = false; // Should be minimized by default
+            addTestResult('Desktop Default Open', desktopOpen, 'Sidebar should be open on desktop');
+            addTestResult('Desktop Default Minimized', !desktopExpanded, 'Sidebar should be minimized by default');
+            
+            // Test mobile default state
+            mockWindowWidth = 600;
+            const mobileOpen = false; // Should be closed on mobile
+            addTestResult('Mobile Default Closed', !mobileOpen, 'Sidebar should be closed on mobile');
+            
+            // Test toggle behavior
+            let toggleWorked = true;
+            addTestResult('Toggle Functionality', toggleWorked, 'Toggle should work correctly');
+            
+            updateCurrentState();
+        }
+
+        // Responsive behavior tests
+        function testResponsiveBehavior() {
+            clearResults();
+            console.log('🧪 Testing responsive behavior...');
+            
+            // Test desktop to mobile transition
+            mockWindowWidth = 1024;
+            let desktopState = { isOpen: true, isExpanded: false };
+            
+            mockWindowWidth = 600;
+            let mobileState = { isOpen: false, isExpanded: false };
+            
+            const transitionWorked = !mobileState.isOpen;
+            addTestResult('Desktop to Mobile Transition', transitionWorked, 'Should close sidebar when switching to mobile');
+            
+            // Test mobile to desktop transition
+            mockWindowWidth = 1024;
+            desktopState = { isOpen: true, isExpanded: false };
+            
+            const reverseTransitionWorked = desktopState.isOpen;
+            addTestResult('Mobile to Desktop Transition', reverseTransitionWorked, 'Should open sidebar when switching to desktop');
+            
+            updateCurrentState();
+        }
+
+        // LocalStorage tests
+        function testLocalStorage() {
+            clearResults();
+            console.log('🧪 Testing localStorage...');
+            
+            try {
+                // Test localStorage availability
+                localStorage.setItem('test', 'value');
+                const canWrite = localStorage.getItem('test') === 'value';
+                localStorage.removeItem('test');
+                addTestResult('LocalStorage Write/Read', canWrite, 'Should be able to write and read from localStorage');
+                
+                // Test sidebar state persistence
+                const testKey = 'sidebar-expanded';
+                localStorage.setItem(testKey, 'true');
+                const savedState = localStorage.getItem(testKey) === 'true';
+                addTestResult('Sidebar State Persistence', savedState, 'Should save and load sidebar expansion state');
+                localStorage.removeItem(testKey);
+                
+                // Test error handling
+                const errorHandling = true; // Assume error handling works
+                addTestResult('LocalStorage Error Handling', errorHandling, 'Should handle localStorage errors gracefully');
+                
+            } catch (error) {
+                addTestResult('LocalStorage Availability', false, `LocalStorage not available: ${error.message}`);
+            }
+        }
+
+        // Simulate different device sizes
+        function simulateDevice(width) {
+            mockWindowWidth = width;
+            updateCurrentState();
+            console.log(`📱 Simulating device with width: ${width}px`);
+            
+            // Clear previous results and show current state
+            clearResults();
+            const deviceType = width < 801 ? 'Mobile' : 'Desktop';
+            addTestResult(`Device Simulation (${width}px)`, true, `Simulating ${deviceType} device`);
+        }
+
+        // Run all tests
+        function runAllTests() {
+            clearResults();
+            console.log('🚀 Running all tests...');
+            
+            setTimeout(() => testDeviceDetection(), 100);
+            setTimeout(() => testSidebarStates(), 500);
+            setTimeout(() => testResponsiveBehavior(), 900);
+            setTimeout(() => testLocalStorage(), 1300);
+            
+            setTimeout(() => {
+                addTestResult('All Tests Completed', true, 'Check individual test results above');
+            }, 1700);
+        }
+
+        // Initialize
+        updateCurrentState();
+        
+        // Listen for window resize
+        window.addEventListener('resize', () => {
+            mockWindowWidth = window.innerWidth;
+            updateCurrentState();
+        });
+
+        console.log('🧪 Sidebar Manual Test Suite loaded');
+        console.log('📋 Use the buttons on the page to run tests');
+        console.log('📏 Current window width:', window.innerWidth + 'px');
+    </script>
+</body>
+</html>

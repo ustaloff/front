@@ -45,7 +45,7 @@ const toggleAriaLabel = computed(() => {
                 </span>
             </button>
             <div class="logo">
-                <router-link to="/">Noname</router-link>
+                <router-link to="/">CodeCraftPro</router-link>
             </div>
             <nav class="main-nav">
                 <router-link v-if="auth.user" to="/profile">Профиль</router-link>

@@ -10,27 +10,10 @@ import { useAuthStore } from './stores/auth'
 import PrimeVue from 'primevue/config'
 import Preset from './presets/material'
 
-import Button from 'primevue/button'
-import FloatLabel from 'primevue/floatLabel'
-import IftaLabel from 'primevue/iftalabel'
-import InputText from 'primevue/inputText'
-import Select from 'primevue/select'
-import Card from 'primevue/card'
-import Drawer from 'primevue/drawer'
-import Dialog from 'primevue/dialog'
-import Toast from 'primevue/toast'
-
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-
-// Инициализируем auth store для получения CSRF токена и проверки сохраненной сессии
-// Делаем это асинхронно, чтобы не блокировать запуск приложения
-const authStore = useAuthStore()
-authStore.initialize().catch(error => {
-    console.warn('Auth store initialization failed:', error)
-})
 
 app.use(PrimeVue, {
     ripple: true,
@@ -47,14 +30,34 @@ app.use(PrimeVue, {
     }
 });
 
-app.component('Button', Button);
+import Button from 'primevue/button'
+app.component('Button', Button)
+
+import FloatLabel from 'primevue/floatLabel'
 app.component('FloatLabel', FloatLabel)
+
+import IftaLabel from 'primevue/iftalabel'
 app.component('IftaLabel', IftaLabel)
+
+import InputText from 'primevue/inputText'
 app.component('InputText', InputText)
+
+import Select from 'primevue/select'
 app.component('Select', Select)
+
+import Card from 'primevue/card'
 app.component('Card', Card)
+
+import Drawer from 'primevue/drawer'
 app.component('Drawer', Drawer)
+
+import Dialog from 'primevue/dialog'
 app.component('Dialog', Dialog)
+
+import Toast from 'primevue/toast'
 app.component('Toast', Toast)
+
+import { Form } from '@primevue/forms'
+app.component('Form', Form)
 
 app.mount('#app')

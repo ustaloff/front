@@ -1,8 +1,8 @@
 /**
  * Pinia store для управления информацией об устройстве и breakpoints
  */
-import {defineStore} from 'pinia'
-import {ref, computed, onUnmounted} from 'vue'
+import { defineStore } from 'pinia'
+import { ref, computed, onUnmounted } from 'vue'
 import { TIMEOUTS } from '@/config'
 
 // Константы
@@ -41,12 +41,12 @@ const loadBreakpointsFromCSS = () => {
 
 export const useDeviceStore = defineStore('device', () => {
     // === СОСТОЯНИЕ ===
-    
+
     const screenWidth = ref(window.innerWidth)
     const breakpoints = ref(loadBreakpointsFromCSS())
 
     // === COMPUTED СВОЙСТВА ===
-    
+
     /**
      * XXS: все что меньше 375px (0-374px)
      */
@@ -195,8 +195,8 @@ export const useDeviceStore = defineStore('device', () => {
 
     const initResizeListener = () => {
         if (!listenersInitialized) {
-            window.addEventListener('resize', debouncedCheckDevice, {passive: true})
-            window.addEventListener('orientationchange', checkDevice, {passive: true})
+            window.addEventListener('resize', debouncedCheckDevice, { passive: true })
+            window.addEventListener('orientationchange', checkDevice, { passive: true })
             listenersInitialized = true
         }
     }
@@ -220,16 +220,16 @@ export const useDeviceStore = defineStore('device', () => {
     })
 
     // === ПУБЛИЧНЫЙ API ===
-    
+
     return {
         // Состояние
         screenWidth,
         breakpoints,
-        
+
         // Тип устройства
         isMobile,
         currentBreakpoint,
-        
+
         // Конкретные breakpoints
         isXxs,  // < 375px
         isXs,   // 375-575px
@@ -238,7 +238,7 @@ export const useDeviceStore = defineStore('device', () => {
         isLg,   // 1024-1279px
         isXl,   // 1280-1439px
         isXxl,  // 1440px+
-        
+
         // Методы
         checkDevice,
         updateBreakpoints,

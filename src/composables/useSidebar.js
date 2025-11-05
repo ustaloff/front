@@ -3,8 +3,8 @@
  * Поддерживает адаптивное поведение для мобильных и десктопных устройств
  * Автоматически сохраняет состояние expansion в localStorage
  */
-import {reactive, computed, watch} from 'vue'
-import {useDeviceStore} from '@/stores/device'
+import { reactive, computed, watch } from 'vue'
+import { useDeviceStore } from '@/stores/device'
 
 // Константы
 export const SIDEBAR = 'SIDEBAR'
@@ -60,7 +60,7 @@ const getSidebarWidth = () => {
  * @returns {string} Ширина сайдбара в CSS единицах
  */
 const getCurrentSidebarWidth = (isExpanded) => {
-    const {expanded, minimized} = getSidebarWidth()
+    const { expanded, minimized } = getSidebarWidth()
     return isExpanded ? expanded : minimized
 }
 
@@ -131,7 +131,7 @@ export function useSidebar(breakpoint) {
         if (!isMobile.value) {
             // Сохраняем состояние только на десктопе
             saveExpandedState(newExpanded)
-            
+
             // Обновляем ширину offset только если sidebar открыт
             if (sidebarState.isOpen) {
                 const width = getCurrentSidebarWidth(newExpanded)
@@ -169,7 +169,7 @@ export function useSidebar(breakpoint) {
                 updateBodySidebarState(true, width)
             }
         }
-    }, {immediate: false})
+    }, { immediate: false })
 
     // Computed свойства для реактивного доступа к состоянию
     const isOpen = computed(() => sidebarState.isOpen)

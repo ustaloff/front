@@ -1,4 +1,4 @@
-import {ref} from 'vue';
+import { ref } from 'vue';
 
 class Color {
     constructor(r, g, b) {
@@ -168,7 +168,7 @@ class Solver {
         const A = 5;
         const c = 15;
         const a = [60, 180, 18000, 600, 1.2, 1.2];
-        let best = {loss: Infinity};
+        let best = { loss: Infinity };
 
         for (let i = 0; best.loss > 25 && i < 3; i++) {
             const initial = [50, 20, 3750, 50, 100, 100];
@@ -221,7 +221,7 @@ class Solver {
             }
         }
 
-        return {values: best, loss: bestLoss};
+        return { values: best, loss: bestLoss };
     }
 
     fix(value, idx) {

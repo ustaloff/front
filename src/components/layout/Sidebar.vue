@@ -1,10 +1,10 @@
 <script setup>
-import {useAuthStore} from '@/stores/auth'
-import {useSidebar, closeSidebar, handleBeforeHide} from '@/composables/useSidebar'
-import {watch} from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useSidebar, closeSidebar, handleBeforeHide } from '@/composables/useSidebar'
+import { watch } from 'vue'
 
 const auth = useAuthStore()
-const {isOpen, isExpanded, isMobile, sidebarState, toggleExpansion} = useSidebar('lg')
+const { isOpen, isExpanded, isMobile, sidebarState, toggleExpansion } = useSidebar('lg')
 
 // Обработчик клика по логотипу для переключения expansion
 const handleLogoClick = () => {

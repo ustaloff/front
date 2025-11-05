@@ -1,9 +1,9 @@
 <script setup>
-import {RouterView} from 'vue-router'
-import {useAuthStore} from '@/stores/auth'
-import {useDeviceStore} from '@/stores/device'
-import {onMounted, onUnmounted} from 'vue'
-import {Header, Sidebar, Main, Footer} from '@/components/layout'
+import { RouterView } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useDeviceStore } from '@/stores/device'
+import { onMounted, onUnmounted } from 'vue'
+import { Header, Sidebar, Main, Footer } from '@/components/layout'
 
 const auth = useAuthStore()
 const deviceStore = useDeviceStore()

@@ -31,36 +31,48 @@ app.use(PrimeVue, {
 });
 
 import Button from 'primevue/button'
+
 app.component('Button', Button)
 
 import FloatLabel from 'primevue/floatLabel'
+
 app.component('FloatLabel', FloatLabel)
 
 import IftaLabel from 'primevue/iftalabel'
+
 app.component('IftaLabel', IftaLabel)
 
 import InputText from 'primevue/inputText'
+
 app.component('InputText', InputText)
 
 import Message from 'primevue/message'
+
 app.component('Message', Message)
 
 import Select from 'primevue/select'
+
 app.component('Select', Select)
 
 import Card from 'primevue/card'
+
 app.component('Card', Card)
 
 import Drawer from 'primevue/drawer'
+
 app.component('Drawer', Drawer)
 
 import Dialog from 'primevue/dialog'
+
 app.component('Dialog', Dialog)
 
 import Toast from 'primevue/toast'
+
 app.component('Toast', Toast)
 
-import { Form } from '@primevue/forms'
+import { Form, FormField } from '@primevue/forms'
+
 app.component('Form', Form)
+app.component('FormField', FormField)
 
 app.mount('#app')

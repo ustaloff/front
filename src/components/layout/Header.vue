@@ -64,8 +64,8 @@ const toggleAriaLabel = computed(() => {
             </div>
         </div>
     </header>
-    <LoginDialog />
-    <RegisterDialog />
+    <LoginDialog/>
+    <RegisterDialog/>
 </template>
 
 <style lang="scss" scoped>

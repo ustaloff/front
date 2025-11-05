@@ -17,10 +17,10 @@
     top: 0 !important;
     height: 100vh !important;
     z-index: 1000;
-    
+
     &.sidebar--minimized {
       width: $sidebar-minimized-width !important;
-      
+
       // Hide text elements in minimized state
       .sidebar__logo .logo-text,
       .sidebar-menu span:not(.icon),
@@ -29,7 +29,7 @@
         visibility: hidden;
         width: 0;
       }
-      
+
       // Special logic for .sidebar__widgets in minimized state
       .sidebar__widgets {
         opacity: 0;
@@ -37,17 +37,17 @@
         height: 0;
         overflow: hidden;
       }
-      
+
       // Center icons when minimized
       .sidebar-menu a {
         justify-content: center;
         padding-left: $spacing-sm;
         padding-right: $spacing-sm;
       }
-      
+
       .sidebar__user {
         text-align: center;
-        
+
         .user-info {
           display: flex;
           flex-direction: column;
@@ -55,10 +55,10 @@
         }
       }
     }
-    
+
     &.sidebar--expanded {
       width: $sidebar-width !important;
-      
+
       .sidebar__logo .logo-text,
       .sidebar-menu span:not(.icon),
       .sidebar__user span {
@@ -66,7 +66,7 @@
         visibility: visible;
         width: auto;
       }
-      
+
       .sidebar__widgets {
         opacity: 1;
         visibility: visible;
@@ -74,11 +74,11 @@
       }
     }
   }
-  
+
   // Mobile behavior (800px and below)
   @media (max-width: 800px) {
     width: 280px !important;
-    
+
     &.sidebar--mobile {
       .sidebar__logo .logo-text,
       .sidebar-menu span:not(.icon),
@@ -87,7 +87,7 @@
         visibility: visible;
         width: auto;
       }
-      
+
       .sidebar__widgets {
         opacity: 1;
         visibility: visible;
@@ -113,15 +113,15 @@
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s ease;
-  
+
   .logo-text {
     transition: opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
   }
-  
+
   &:hover {
     color: $primary-color;
   }
-  
+
   &:focus {
     outline: 2px solid $primary-color;
     outline-offset: 2px;
@@ -147,11 +147,11 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  
+
   li {
     margin-bottom: $spacing-xs;
   }
-  
+
   a {
     display: flex;
     align-items: center;
@@ -162,32 +162,32 @@
     transition: all 0.3s ease;
     gap: $spacing-sm;
     position: relative;
-    
+
     .icon {
       flex-shrink: 0;
       width: 1.5rem;
       text-align: center;
       font-size: 1.2rem;
     }
-    
+
     // Span animations for text elements
     span:not(.icon) {
       transition: opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
       white-space: nowrap;
       overflow: hidden;
     }
-    
+
     &:hover {
       background-color: rgba($primary-color, 0.1);
       color: $primary-color;
       transform: translateX(2px);
     }
-    
+
     &.router-link-active {
       background-color: rgba($primary-color, 0.15);
       color: $primary-color;
       font-weight: 600;
-      
+
       &::before {
         content: '';
         position: absolute;
@@ -199,7 +199,7 @@
         border-radius: 0 2px 2px 0;
       }
     }
-    
+
     &:focus {
       outline: 2px solid $primary-color;
       outline-offset: -2px;
@@ -213,25 +213,25 @@
   padding: $spacing-md;
   border-top: 1px solid #e9ecef;
   background: rgba($primary-color, 0.05);
-  
+
   .user-info {
     h4 {
       margin: 0 0 $spacing-xs 0;
       font-size: $font-size-small;
       color: $text-color;
       font-weight: 600;
-      
+
       span {
         transition: opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
       }
     }
-    
+
     .balance {
       margin: 0;
       font-weight: bold;
       color: $success-color;
       font-size: 1.1rem;
-      
+
       span {
         transition: opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
       }
@@ -244,10 +244,10 @@
   padding: $spacing-md;
   border-top: 1px solid #e9ecef;
   transition: opacity 0.3s ease, visibility 0.3s ease, height 0.3s ease;
-  
+
   .widget {
     margin-bottom: $spacing-md;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -258,7 +258,7 @@
 .sidebar__mask {
   background: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(2px);
-  
+
   @media (min-width: 801px) {
     // Hide overlay on desktop
     display: none !important;

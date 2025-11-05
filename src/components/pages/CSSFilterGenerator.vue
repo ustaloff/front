@@ -93,8 +93,8 @@
 </template>
 
 <script setup>
-import {ref, computed} from 'vue';
-import {useCSSFilterGenerator} from '@/composables/useCSSFilterGenerator';
+import { ref, computed } from 'vue';
+import { useCSSFilterGenerator } from '@/composables/useCSSFilterGenerator';
 
 const {
     targetColor,

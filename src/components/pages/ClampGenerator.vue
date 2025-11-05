@@ -95,10 +95,10 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import {useClampGenerator} from '@/composables/useClampGenerator';
+import { ref } from 'vue';
+import { useClampGenerator } from '@/composables/useClampGenerator';
 
-const {form, result, generateClamp, copyToClipboard} = useClampGenerator();
+const { form, result, generateClamp, copyToClipboard } = useClampGenerator();
 
 const copySuccess = ref(false);
 

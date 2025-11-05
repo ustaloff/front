@@ -1,4 +1,4 @@
-import {ref, computed, onUnmounted} from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 
 export function useTimer(initialTime = 0, interval = 1000) {
     const time = ref(initialTime)

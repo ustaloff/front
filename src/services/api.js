@@ -106,11 +106,11 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             removeStoredToken()
             removeAuthHeader()
-            
+
             // Можно добавить редирект на страницу входа
             // window.location.href = '/login'
         }
-        
+
         return Promise.reject(error)
     }
 )
@@ -127,7 +127,7 @@ export const apiMethods = {
      * @param {Object} config - Дополнительная конфигурация axios
      */
     get: (url, config = {}) => api.get(url, config),
-    
+
     /**
      * POST запрос
      * @param {string} url - URL endpoint
@@ -135,7 +135,7 @@ export const apiMethods = {
      * @param {Object} config - Дополнительная конфигурация axios
      */
     post: (url, data = {}, config = {}) => api.post(url, data, config),
-    
+
     /**
      * PUT запрос
      * @param {string} url - URL endpoint
@@ -143,7 +143,7 @@ export const apiMethods = {
      * @param {Object} config - Дополнительная конфигурация axios
      */
     put: (url, data = {}, config = {}) => api.put(url, data, config),
-    
+
     /**
      * DELETE запрос
      * @param {string} url - URL endpoint

@@ -1,7 +1,7 @@
 <template>
     <footer class="app-footer">
         <div class="footer-content container">
-            <p>&copy; 2024 CodeCraftPro. Все права защищены.</p>
+            <p>&copy; 2024 CodeCraft. Все права защищены.</p>
             <div class="footer-links">
                 <a href="#">Правила</a>
                 <a href="#">Поддержка</a>

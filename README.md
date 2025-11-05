@@ -1,4 +1,4 @@
-# CodeCraftPro Frontend
+# CodeCraft Frontend
 
 Modern Vue.js 3 frontend application built with cutting-edge technologies and best practices for professional development workflows.
 

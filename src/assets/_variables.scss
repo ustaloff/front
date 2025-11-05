@@ -1,4 +1,4 @@
-@use 'sass:map';
+
 
 // Shared SCSS Variables - синхронизированы с PrimeVue темой
 $body-bg: #d1fae5; // соответствует brand.surface.100
@@ -66,19 +66,7 @@ $container-padding-x: 15px;
 $sidebar-width: 16.5rem;
 $sidebar-minimized-width: 5.25rem;
 
-// CSS Custom Properties для синхронизации с JS
-:root {
-  --sidebar-width: #{$sidebar-width};
-  --sidebar-minimized-width: #{$sidebar-minimized-width};
-  
-  // Breakpoints - единый источник истины
-  --breakpoint-xs: #{map.get($breakpoints, xs)};
-  --breakpoint-sm: #{map.get($breakpoints, sm)};
-  --breakpoint-md: #{map.get($breakpoints, md)};
-  --breakpoint-lg: #{map.get($breakpoints, lg)};
-  --breakpoint-xl: #{map.get($breakpoints, xl)};
-  --breakpoint-xxl: #{map.get($breakpoints, xxl)};
-}
+
 
 
 

@@ -1,26 +1,25 @@
 <script setup>
-import {useAuthStore} from '@/stores/auth'
-import {useSidebar, toggleVisibility} from '@/composables/useSidebar'
-import {computed} from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useSidebar } from '@/composables/useSidebar'
+import { computed } from 'vue'
+import { useLoginDialog } from '@/composables/useLoginDialog'
+import LoginDialog from '@/components/auth/LoginDialog.vue'
+import { useRegisterDialog } from '@/composables/useRegisterDialog'
+import RegisterDialog from '@/components/auth/RegisterDialog.vue'
 
 const auth = useAuthStore()
-const {isOpen, isExpanded, isMobile, toggleSidebar} = useSidebar()
+const { isOpen, isExpanded, isMobile, toggleSidebar } = useSidebar()
+const { openLoginDialog } = useLoginDialog()
+const { openRegisterDialog } = useRegisterDialog()
 
-// Обработчик клика по кнопке toggle
 const handleToggleClick = () => {
     toggleSidebar()
 }
-
-// Определяем состояние кнопки в зависимости от устройства
-/*const isToggleActive = computed(() => {
-    return isOpen.value // На всех устройствах показываем состояние открыт/закрыт
-})*/
 
 const isToggleActive = computed(() => {
     return isMobile.value ? isOpen.value : isExpanded.value
 })
 
-// Определяем aria-label в зависимости от устройства и состояния
 const toggleAriaLabel = computed(() => {
     if (isMobile.value) {
         return isOpen.value ? 'Закрыть меню' : 'Открыть меню'
@@ -45,7 +44,7 @@ const toggleAriaLabel = computed(() => {
                 </span>
             </button>
             <div class="logo">
-                <router-link to="/">CodeCraftPro</router-link>
+                <router-link to="/">CodeCraft</router-link>
             </div>
             <nav class="main-nav">
                 <router-link v-if="auth.user" to="/profile">Профиль</router-link>
@@ -59,12 +58,14 @@ const toggleAriaLabel = computed(() => {
                     Выйти
                 </button>
                 <div v-else class="auth-links">
-                    <router-link to="/login" class="btn-primary">Войти</router-link>
-                    <router-link to="/register" class="btn-secondary">Регистрация</router-link>
+                    <button @click="openLoginDialog" class="btn-primary">Войти</button>
+                    <button @click="openRegisterDialog" class="btn-secondary">Регистрация</button>
                 </div>
             </div>
         </div>
     </header>
+    <LoginDialog />
+    <RegisterDialog />
 </template>
 
 <style lang="scss" scoped>

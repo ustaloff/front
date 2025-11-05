@@ -42,6 +42,9 @@ app.component('IftaLabel', IftaLabel)
 import InputText from 'primevue/inputText'
 app.component('InputText', InputText)
 
+import Message from 'primevue/message'
+app.component('Message', Message)
+
 import Select from 'primevue/select'
 app.component('Select', Select)
 

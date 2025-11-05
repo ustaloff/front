@@ -18,89 +18,107 @@ import {
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        user: null,                    // Данные текущего пользователя
-        token: getStoredToken(),       // JWT токен из localStorage
-        isLoading: false,              // Флаг загрузки для UI
-        error: null                    // Последняя ошибка аутентификации
+        user: null,
+        token: getStoredToken(),
+        isLoading: false,
+        error: null,
+        errorDetails: null,
+        errorType: null,
     }),
-    
+
     getters: {
-        /**
-         * Проверяет, аутентифицирован ли пользователь
-         * @param {Object} state - Состояние store
-         * @returns {boolean} true если есть токен
-         */
         isAuthenticated: (state) => !!state.token,
-        
-        /**
-         * Возвращает имя пользователя или email для отображения
-         * @param {Object} state - Состояние store
-         * @returns {string} Имя пользователя или 'Гость'
-         */
-        displayName: (state) => state.user?.name || state.user?.email || 'Гость'
+        displayName: (state) => state.user?.name || state.user?.email || 'Гость',
+        hasError: (state) => !!state.error,
+        errorMessage: (state) => state.errorDetails?.message || state.error,
+        isValidationError: (state) => state.errorType === 'validation',
+        isNetworkError: (state) => state.errorType === 'network',
     },
+
     actions: {
-        /**
-         * Регистрирует нового пользователя
-         * @param {Object} credentials - Данные для регистрации (name, email, password, etc.)
-         * @throws {Error} При ошибке регистрации
-         */
-        async register(credentials) {
-            this.isLoading = true
+        clearError() {
             this.error = null
-            
+            this.errorDetails = null
+            this.errorType = null
+        },
+
+        handleAuthError(error) {
+            const classifiedError = this.classifyError(error)
+            this.error = classifiedError.message
+            this.errorDetails = classifiedError
+            this.errorType = classifiedError.type
+        },
+
+        classifyError(error) {
+            if (!error.response) {
+                return { type: 'network', message: 'Проблемы с подключением к серверу' };
+            }
+
+            const status = error.response.status
+            const data = error.response.data
+
+            switch (status) {
+                case 422:
+                    const validationMessage = data.errors?.email?.[0] || data.message
+                    return {
+                        type: 'validation',
+                        message: validationMessage,
+                        field: 'email'
+                    };
+                case 429:
+                    return {
+                        type: 'server',
+                        message: 'Слишком много попыток входа. Попробуйте позже.'
+                    };
+                case 500:
+                    return {
+                        type: 'server',
+                        message: 'Внутренняя ошибка сервера. Попробуйте позже.'
+                    };
+                default:
+                    return {
+                        type: 'unknown',
+                        message: data.message || 'Произошла неизвестная ошибка'
+                    };
+            }
+        },
+
+        async register(credentials) {
+            this.clearError()
+            this.isLoading = true
+
             try {
                 const response = await api.post('/register', credentials)
-                
-                // Сохраняем данные пользователя и токен
                 this.user = response.data.user
                 this.token = response.data.access_token
-                
-                // Обновляем localStorage и axios headers
                 setStoredToken(this.token)
                 setAuthHeader(this.token)
-                
             } catch (error) {
-                this.error = error.response?.data?.message || 'Ошибка регистрации'
+                this.handleAuthError(error)
                 throw error
             } finally {
                 this.isLoading = false
             }
         },
 
-        /**
-         * Выполняет вход пользователя
-         * @param {string} email - Email пользователя
-         * @param {string} password - Пароль пользователя
-         * @throws {Error} При ошибке входа
-         */
         async login(email, password) {
+            this.clearError()
             this.isLoading = true
-            this.error = null
-            
+
             try {
-                const response = await api.post('/login', {email, password})
-                
-                // Сохраняем данные пользователя и токен
+                const response = await api.post('/login', { email, password })
                 this.token = response.data.access_token
                 this.user = response.data.user
-                
-                // Обновляем localStorage и axios headers
                 setStoredToken(this.token)
                 setAuthHeader(this.token)
-                
             } catch (error) {
-                this.error = error.response?.data?.message || 'Ошибка входа'
+                this.handleAuthError(error)
                 throw error
             } finally {
                 this.isLoading = false
             }
         },
 
-        /**
-         * Получает данные текущего пользователя с сервера
-         * Автоматически очищает сессию при ошибке аутентификации
-         */
         async fetchUser() {
             if (!this.token) {
                 this.user = null
@@ -109,13 +127,12 @@ export const useAuthStore = defineStore('auth', {
 
             this.isLoading = true
             setAuthHeader(this.token)
-            
+
             try {
                 const response = await api.get('/me')
                 this.user = response.data
                 this.error = null
             } catch (error) {
-                // При ошибке аутентификации очищаем сессию
                 console.warn('Failed to fetch user data:', error)
                 this.clearSession()
             } finally {
@@ -123,51 +140,34 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        /**
-         * Выполняет выход пользователя
-         * Отправляет запрос на сервер и очищает локальную сессию
-         */
         async logout() {
             if (!this.token) return
 
             this.isLoading = true
-            
+
             try {
-                // Пытаемся уведомить сервер о выходе
                 await api.post('/logout', null, {
                     headers: {
                         Authorization: `Bearer ${this.token}`
                     }
                 })
             } catch (error) {
-                // Игнорируем ошибки logout на сервере, все равно очищаем локальную сессию
                 console.warn('Logout request failed:', error)
             } finally {
-                // Всегда очищаем локальную сессию
                 this.clearSession()
                 this.isLoading = false
-                
-                // Перенаправляем на страницу входа
-                router.push('/login')
+                router.push('/')
             }
         },
 
-        /**
-         * Очищает сессию пользователя (локальные данные)
-         * Используется при logout или ошибках аутентификации
-         */
         clearSession() {
             this.user = null
             this.token = null
-            this.error = null
+            this.clearError()
             removeStoredToken()
             removeAuthHeader()
         },
 
-        /**
-         * Инициализирует store при запуске приложения
-         * Проверяет наличие сохраненного токена и получает данные пользователя
-         */
         async initialize() {
             if (this.token) {
                 setAuthHeader(this.token)

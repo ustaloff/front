@@ -1,8 +1,7 @@
-import {createRouter, createWebHistory} from 'vue-router'
-import {useAuthStore} from '@/stores/auth'
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useLoginDialog } from '@/composables/useLoginDialog'
 
-import Login from '@/components/pages/Login.vue'
-import Register from '@/components/pages/Register.vue'
 import Profile from '@/components/pages/Profile.vue'
 import Dashboard from '@/components/pages/Dashboard.vue'
 import ClampGenerator from '@/components/pages/ClampGenerator.vue'
@@ -14,31 +13,18 @@ const routes = [
         path: '/',
         name: 'main',
         component: Profile,
-        //meta: {requiresAuth: true},
-    },
-    {
-        path: '/login',
-        name: 'login',
-        component: Login,
-        meta: {guestOnly: true}, // чтобы залогиненный не мог попасть сюда
-    },
-    {
-        path: '/register',
-        name: 'register',
-        component: Register,
-        meta: {guestOnly: true},
     },
     {
         path: '/profile',
         name: 'profile',
         component: Profile,
-        meta: {requiresAuth: true},
+        meta: { requiresAuth: true },
     },
     {
         path: '/admin',
         name: 'admin',
         component: Dashboard,
-        meta: {requiresAuth: true, requiresAdmin: true},
+        meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
         path: '/clamp-generator',
@@ -55,6 +41,10 @@ const routes = [
         name: 'device-breakpoint-demo',
         component: DeviceBreakpointDemo,
     },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/'
+    },
 ]
 
 const router = createRouter({
@@ -64,23 +54,23 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore()
+    const { openLoginDialog } = useLoginDialog()
 
     if (!auth.user) {
         await auth.fetchUser().catch(() => {
-            // Если fetchUser упал, считаем что пользователь неавторизован
             auth.user = null
         })
     }
 
-    // Если маршрут доступен только гостям (login/register),
-    // а пользователь уже залогинен — редирект на главную
     if (to.meta.guestOnly && auth.user) {
         return next('/')
     }
 
-    // Защищенные маршруты
     if (to.meta.requiresAuth && !auth.user) {
-        return next('/login')
+        openLoginDialog()
+        // If the user was trying to access a specific page, we don't want to proceed.
+        // If they were at the root, we can let them stay there.
+        return next('/')
     }
 
     if (to.meta.requiresAdmin && !auth.user?.is_admin) {

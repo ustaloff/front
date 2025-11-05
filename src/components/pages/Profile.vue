@@ -30,7 +30,7 @@ const formatDate = (dateString) => {
     <div class="container" v-else>
         <h2>Доступ запрещен</h2>
         <p>Пожалуйста, войдите в систему для просмотра профиля.</p>
-        <router-link to="/login" class="login-btn">Войти</router-link>
+        <router-link to="/" class="login-btn">Войти</router-link>
     </div>
 </template>
 

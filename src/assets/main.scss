@@ -3,6 +3,7 @@
 @use '@/assets/mixins' as *;
 @use '@/assets/media' as *;
 
+@use 'sass:map';
 @use 'sass:meta';
 
 @layer reset {
@@ -35,6 +36,20 @@
   --radius-md: #{$radius-md};
   --radius-lg: #{$radius-lg};
 }*/
+
+// CSS Custom Properties для синхронизации с JS
+:root {
+  --sidebar-width: #{$sidebar-width};
+  --sidebar-minimized-width: #{$sidebar-minimized-width};
+
+  // Breakpoints - единый источник истины
+  --breakpoint-xs: #{map.get($breakpoints, xs)};
+  --breakpoint-sm: #{map.get($breakpoints, sm)};
+  --breakpoint-md: #{map.get($breakpoints, md)};
+  --breakpoint-lg: #{map.get($breakpoints, lg)};
+  --breakpoint-xl: #{map.get($breakpoints, xl)};
+  --breakpoint-xxl: #{map.get($breakpoints, xxl)};
+}
 
 html {
   box-sizing: border-box;

@@ -32,6 +32,7 @@ const onBeforeHide = () => {
             :show-close-icon="true"
             :block-scroll="false"
             :dismissable="isMobile"
+            :closeOnEscape="isMobile"
             position="left"
             class="sidebar"
             :class="{
@@ -50,7 +51,7 @@ const onBeforeHide = () => {
                         @click="handleLogoClick"
                         :aria-label="isExpanded ? 'Свернуть меню' : 'Развернуть меню'"
                     >
-                        <span class="logo-text">CodeCraftPro</span>
+                        <span class="logo-text">CodeCraft</span>
                     </a>
                 </div>
 

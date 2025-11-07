@@ -268,9 +268,7 @@ export const useAuthStore = defineStore('auth', {
 
             try {
                 await api.post('/logout', null, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
+                    headers: { Authorization: `Bearer ${this.token}` }
                 })
             } catch (error) {
                 console.warn('Logout request failed:', error)

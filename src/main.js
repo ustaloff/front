@@ -1,14 +1,39 @@
-import './assets/main.scss'
+import '@/assets/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import App from './components/App.vue'
-import router from './router'
+import App from '@/components/App.vue'
+import router from '@/router'
 import { useAuthStore } from './stores/auth'
 
 import PrimeVue from 'primevue/config'
-import Preset from './presets/material'
+
+// === PRESET ===
+import Preset from '@/presets/material'
+
+// === FORM ===
+import { Form, FormField } from '@primevue/forms'
+// === FORM ELEMENTS ===
+import FloatLabel from 'primevue/floatLabel'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import IftaLabel from 'primevue/iftalabel'
+import InputGroup from 'primevue/inputgroup'
+import InputGroupAddon from 'primevue/inputgroupaddon'
+import InputText from 'primevue/inputText'
+import Select from 'primevue/select'
+// === BUTTON ===
+import Button from 'primevue/button'
+// === PANEL ===
+import Card from 'primevue/card'
+// === OVERLAY ===
+import Dialog from 'primevue/dialog'
+import Drawer from 'primevue/drawer'
+import Popover from 'primevue/popover'
+// === MESSAGE ===
+import Message from 'primevue/message'
+import Toast from 'primevue/toast'
 
 const app = createApp(App)
 
@@ -30,49 +55,28 @@ app.use(PrimeVue, {
     }
 });
 
-import Button from 'primevue/button'
-
-app.component('Button', Button)
-
-import FloatLabel from 'primevue/floatLabel'
-
-app.component('FloatLabel', FloatLabel)
-
-import IftaLabel from 'primevue/iftalabel'
-
-app.component('IftaLabel', IftaLabel)
-
-import InputText from 'primevue/inputText'
-
-app.component('InputText', InputText)
-
-import Message from 'primevue/message'
-
-app.component('Message', Message)
-
-import Select from 'primevue/select'
-
-app.component('Select', Select)
-
-import Card from 'primevue/card'
-
-app.component('Card', Card)
-
-import Drawer from 'primevue/drawer'
-
-app.component('Drawer', Drawer)
-
-import Dialog from 'primevue/dialog'
-
-app.component('Dialog', Dialog)
-
-import Toast from 'primevue/toast'
-
-app.component('Toast', Toast)
-
-import { Form, FormField } from '@primevue/forms'
-
+// === FORM ===
 app.component('Form', Form)
 app.component('FormField', FormField)
+// === FORM ELEMENTS ===
+app.component('FloatLabel', FloatLabel)
+app.component('IconField', IconField)
+app.component('InputIcon', InputIcon)
+app.component('IftaLabel', IftaLabel)
+app.component('InputGroup', InputGroup)
+app.component('InputGroupAddon', InputGroupAddon)
+app.component('InputText', InputText)
+app.component('Select', Select)
+// === BUTTON ===
+app.component('Button', Button)
+// === PANEL ===
+app.component('Card', Card)
+// === OVERLAY ===
+app.component('Dialog', Dialog)
+app.component('Drawer', Drawer)
+app.component('Popover', Popover)
+// === MESSAGE ===
+app.component('Message', Message)
+app.component('Toast', Toast)
 
 app.mount('#app')

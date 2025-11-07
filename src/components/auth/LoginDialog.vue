@@ -136,7 +136,6 @@ const handleRegisterClick = () => {
                 class="w-full mt-4"
                 :loading="auth.isLoading"
                 :disabled="auth.isLoading || !$form.valid"
-                severity="primary"
             />
         </Form>
         <div class="text-center mt-4">

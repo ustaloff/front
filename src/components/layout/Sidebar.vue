@@ -22,10 +22,25 @@ const handleDrawerHide = () => {
 const onBeforeHide = () => {
     handleBeforeHide()
 }
+
+
+/*watch([isOpen, isExpanded, isMobile], ([newIsOpen, newIsExpanded, newIsMobile]) => {
+    // console.log('AppSidebar state changed:', { isOpen: newIsOpen, isExpanded: newIsExpanded, isMobile: newIsMobile })
+}, {immediate: true})*/
 </script>
 
 <template>
     <div>
+        <div v-if="true"
+             style="position: fixed; top: 100px; right: 10px; background: black; padding: 10px; border: 1px solid black; z-index: 9999;">
+            Debug: isOpen={{ isOpen }}, isExpanded={{ isExpanded }}, isMobile={{ isMobile }}
+            <br>
+<!--            <button @click="() => sidebarState.isOpen = !sidebarState.isOpen">Toggle Test</button>-->
+            <button @click="() => handleLogoClick">Toggle Test</button>
+
+        </div>
+
+
         <Drawer
             v-model:visible="sidebarState.isOpen"
             :modal="isMobile"
@@ -80,6 +95,12 @@ const onBeforeHide = () => {
                                 <router-link to="/device-breakpoint-demo">
                                     <span class="icon">📱</span>
                                     <span>Device Breakpoints</span>
+                                </router-link>
+                            </li>
+                            <li>
+                                <router-link to="/primevue-demo">
+                                    <span class="icon">📱</span>
+                                    <span>PrimeVue Demo</span>
                                 </router-link>
                             </li>
                             <li v-if="auth.user">

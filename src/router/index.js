@@ -7,6 +7,7 @@ import Dashboard from '@/components/pages/Dashboard.vue'
 import ClampGenerator from '@/components/pages/ClampGenerator.vue'
 import CSSFilterGenerator from '@/components/pages/CSSFilterGenerator.vue'
 import DeviceBreakpointDemo from '@/components/DeviceBreakpointDemo.vue'
+import PrimeVueDemo from '@/components/PrimeVueDemo.vue'
 
 const routes = [
     {
@@ -40,6 +41,11 @@ const routes = [
         path: '/device-breakpoint-demo',
         name: 'device-breakpoint-demo',
         component: DeviceBreakpointDemo,
+    },
+    {
+        path: '/primevue-demo',
+        name: 'primevue-demo',
+        component: PrimeVueDemo,
     },
     {
         path: '/:pathMatch(.*)*',

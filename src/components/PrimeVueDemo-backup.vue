@@ -1,6 +1,6 @@
 <template>
-    <div class="container" ref="containerRef">
-        <InputGroup ref="inputGroupRef" class="input-group-test">
+    <div class="container">
+        <InputGroup ref="inputGroupRef">
             <InputGroupAddon>
                 <Button label="Providers"/>
             </InputGroupAddon>
@@ -28,8 +28,7 @@
                 position: strategy,
                 top: `${y ?? 0}px`,
                 left: `${x ?? 0}px`,
-                //width: 'max-content',
-                width: '100%',
+                width: 'max-content',
             }"
             class="popover"
         >
@@ -52,55 +51,31 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useFloating, autoUpdate, offset, flip, size } from '@floating-ui/vue';
+import { ref } from "vue";
+import { useFloating, autoUpdate, offset, size } from '@floating-ui/vue';
 
 const containerRef = ref();
 const inputGroupRef = ref();
 const floating = ref();
 const showPopover = ref(false);
 
-const middleware = computed(() => {
-    if (!containerRef.value) {
-        return [offset(10), flip()];
-    }
-    return [
-        offset(10),
-        flip(),
-                size({
-                    apply({ availableWidth, elements }) {
-                        const boundaryEl = containerRef.value;
-                        if (!boundaryEl) return;
-        
-                        const style = getComputedStyle(boundaryEl);
-                        //const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-                        const paddingX = parseFloat(style.paddingInlineStart);
-                        const newMaxWidth = availableWidth - paddingX;
-        
-                        console.log({
-                            originalAvailableWidth: availableWidth,
-                            paddingX,
-                            newMaxWidth
-                        });
-        
-                        Object.assign(elements.floating.style, {
-                            maxWidth: `${newMaxWidth}px`,
-                        });
-                    },
-                    boundary: containerRef.value,
-                })
-    ];
-});
-
 const { x, y, strategy } = useFloating(inputGroupRef, floating, {
-    open: showPopover,
     placement: 'bottom-end',
-    middleware: middleware,
+    middleware: [
+        offset(10),
+        size({
+            apply({ rects, elements }) {
+                Object.assign(elements.floating.style, {
+                    width: `${rects.reference.width}px`,
+                });
+            },
+        })
+    ],
     whileElementsMounted: autoUpdate,
 });
 
 const members = ref([
-    { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
+    { name: 'Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
     { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
     { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' }
 ]);
@@ -123,10 +98,5 @@ const toggle = () => {
     background: #1e293b;
     border-color: #475569;
     color: #ffffff;
-}
-
-.input-group-test {
-    max-width: 300px;
-    margin-inline: auto;
 }
 </style>

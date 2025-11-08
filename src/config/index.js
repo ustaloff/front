@@ -63,6 +63,12 @@ export const VALIDATION = {
     NAME_MAX_LENGTH: 255
 }
 
+// === UI CONFIG ===
+
+export const UI_CONFIG = {
+    SIDEBAR_BREAKPOINT: 'lg'
+}
+
 export default {
     API_CONFIG,
     SERVER_CONFIG,
@@ -70,5 +76,6 @@ export default {
     STORAGE_KEYS,
     ROUTES,
     TIMEOUTS,
-    VALIDATION
+    VALIDATION,
+    UI_CONFIG
 }

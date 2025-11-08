@@ -96,12 +96,12 @@ main {
 
 @media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width} * 2)) {
   header, main, footer {
-    padding-inline-start: 0;
+    margin-inline-start: 0;
     transition: padding-inline-start 0.3s ease;
   }
 
   body:not(:has(.sidebar--mobile)) :where(header, main, footer) {
-    padding-inline-start: calc(var(--sidebar-current-width) + 0px);
+    margin-inline-start: calc(var(--sidebar-current-width) + 0px);
   }
 }
 

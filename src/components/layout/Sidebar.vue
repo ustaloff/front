@@ -2,13 +2,22 @@
 import { useAuthStore } from '@/stores/auth'
 import { useSidebar, closeSidebar, handleBeforeHide } from '@/composables/useSidebar'
 import { watch } from 'vue'
+import { UI_CONFIG } from '@/config'
 
 const auth = useAuthStore()
-const { isOpen, isExpanded, isMobile, sidebarState, toggleExpansion } = useSidebar('lg')
+const {
+    isOpen,
+    isExpanded,
+    isMobile,
+    sidebarState,
+    toggleExpansion,
+    toggleSidebar
+} = useSidebar(UI_CONFIG.SIDEBAR_BREAKPOINT)
 
 // Обработчик клика по логотипу для переключения expansion
-const handleLogoClick = () => {
-    toggleExpansion()
+const handleToggleClick = () => {
+    console.log('handleLogoClick');
+    toggleSidebar()
 }
 
 // Обработчик закрытия drawer
@@ -35,8 +44,9 @@ const onBeforeHide = () => {
              style="position: fixed; top: 100px; right: 10px; background: black; padding: 10px; border: 1px solid black; z-index: 9999;">
             Debug: isOpen={{ isOpen }}, isExpanded={{ isExpanded }}, isMobile={{ isMobile }}
             <br>
-<!--            <button @click="() => sidebarState.isOpen = !sidebarState.isOpen">Toggle Test</button>-->
-            <button @click="() => handleLogoClick">Toggle Test</button>
+            <!--            <button @click="() => sidebarState.isOpen = !sidebarState.isOpen">Toggle Test</button>-->
+            <!--            <button @click="() => handleLogoClick">Toggle Test</button>-->
+            <button @click="handleToggleClick">Toggle Test</button>
 
         </div>
 
@@ -63,7 +73,7 @@ const onBeforeHide = () => {
                     <a
                         href="javascript:void(0)"
                         class="sidebar__logo"
-                        @click="handleLogoClick"
+                        @click="handleToggleClick"
                         :aria-label="isExpanded ? 'Свернуть меню' : 'Развернуть меню'"
                     >
                         <span class="logo-text">CodeCraft</span>

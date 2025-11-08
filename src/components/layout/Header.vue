@@ -6,9 +6,10 @@ import { useLoginDialog } from '@/composables/useLoginDialog'
 import LoginDialog from '@/components/auth/LoginDialog.vue'
 import { useRegisterDialog } from '@/composables/useRegisterDialog'
 import RegisterDialog from '@/components/auth/RegisterDialog.vue'
+import { UI_CONFIG } from '@/config'
 
 const auth = useAuthStore()
-const { isOpen, isExpanded, isMobile, toggleSidebar } = useSidebar()
+const { isOpen, isExpanded, isMobile, toggleSidebar } = useSidebar(UI_CONFIG.SIDEBAR_BREAKPOINT)
 const { openLoginDialog } = useLoginDialog()
 const { openRegisterDialog } = useRegisterDialog()
 

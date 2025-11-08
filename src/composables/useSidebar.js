@@ -98,6 +98,8 @@ export function useSidebar(breakpoint) {
         ? computed(() => deviceStore.isBreakpointDown(breakpoint))
         : computed(() => deviceStore.isMobile)
 
+    console.log('breakpoint', breakpoint);
+    console.log('isMobile', isMobile);
     /**
      * Инициализирует состояние сайдбара при первом вызове
      * Устанавливает начальные значения в зависимости от типа устройства

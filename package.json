@@ -24,6 +24,7 @@
     "@floating-ui/vue": "^1.1.9",
     "@primeuix/themes": "^1.2.5",
     "@primevue/forms": "^4.4.1",
+    "@vueuse/core": "^14.0.0",
     "axios": "^1.10.0",
     "pinia": "^3.0.3",
     "primevue": "^4.4.1",

@@ -17,7 +17,7 @@
                         </path>
                     </svg>
                 </InputIcon>
-                <InputText placeholder="Search" @click="toggle"/>
+                <InputText placeholder="Search" @click="open"/>
             </IconField>
         </InputGroup>
 
@@ -28,7 +28,7 @@
                 position: strategy,
                 top: `${y ?? 0}px`,
                 left: `${x ?? 0}px`,
-                width: 'max-content',
+                width: '100%'//'max-content',
             }"
             class="popover"
         >
@@ -54,6 +54,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useFloating, autoUpdate, offset, flip, size } from '@floating-ui/vue';
+import { onClickOutside } from '@vueuse/core';
 
 const containerRef = ref();
 const inputGroupRef = ref();
@@ -69,23 +70,36 @@ const middleware = computed(() => {
         offset(10),
         flip(),
         size({
-            apply({ availableWidth, elements }) {
-                const boundaryEl = containerRef.value
-                const style = getComputedStyle(boundaryEl)
-                const padding = parseFloat(style.paddingInlineStart)
-                const maxWidth = availableWidth - padding
+            apply({ availableHeight, elements }) {
+                const boundaryEl = containerRef.value;
+                if (!boundaryEl) return;
+
+                const referenceRect = elements.reference.getBoundingClientRect();
+                const boundaryRect = boundaryEl.getBoundingClientRect();
+                const boundaryStyle = getComputedStyle(boundaryEl);
+                const boundaryPaddingLeft = parseFloat(boundaryStyle.paddingLeft);
+
+                const newMaxWidth = referenceRect.right - (boundaryRect.left + boundaryPaddingLeft);
+
+                const MIN_POPOVER_HEIGHT = 150;
+                const MAX_POPOVER_HEIGHT = 500;
+                const finalMaxHeight = Math.min(availableHeight, MAX_POPOVER_HEIGHT);
 
                 console.log({
-                    originalAvailableWidth: availableWidth,
-                    padding,
-                    maxWidth
+                    newMaxWidth,
+                    availableHeight,
+                    MAX_POPOVER_HEIGHT,
+                    finalMaxHeight,
+                    MIN_POPOVER_HEIGHT
                 });
 
                 Object.assign(elements.floating.style, {
-                    maxWidth: `${maxWidth}px`,
+                    maxWidth: `${newMaxWidth}px`,
+                    maxHeight: `${finalMaxHeight}px`,
+                    minHeight: `${MIN_POPOVER_HEIGHT}px`,
+                    overflowY: 'auto',
                 });
             },
-            boundary: containerRef.value,
         })
     ];
 });
@@ -97,14 +111,33 @@ const { x, y, strategy } = useFloating(inputGroupRef, floating, {
     whileElementsMounted: autoUpdate,
 });
 
+onClickOutside(floating, () => {
+    showPopover.value = false
+}, { ignore: [inputGroupRef] });
+
 const members = ref([
     { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
     { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
-    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' }
+    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' },
+    { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
+    { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
+    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' },
+    { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
+    { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
+    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' },
+    { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
+    { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
+    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' },
 ]);
 
 const toggle = () => {
-    showPopover.value = !showPopover.value;
+    showPopover.value = !showPopover.value
+}
+
+const open = () => {
+    if (!showPopover.value) {
+        showPopover.value = true
+    }
 }
 </script>
 
@@ -115,12 +148,13 @@ const toggle = () => {
     border-radius: 6px;
     padding: 1rem;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    color: #000000;
 }
 
 .dark .popover {
     background: #1e293b;
     border-color: #475569;
-    color: #ffffff;
+    color: #000000;
 }
 
 .input-group-test {

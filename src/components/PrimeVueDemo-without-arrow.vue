@@ -17,7 +17,7 @@
                         </path>
                     </svg>
                 </InputIcon>
-                <InputText placeholder="Search" @click="toggle"/>
+                <InputText placeholder="Search" @click="open"/>
             </IconField>
         </InputGroup>
 
@@ -28,68 +28,48 @@
                 position: strategy,
                 top: `${y ?? 0}px`,
                 left: `${x ?? 0}px`,
-                width: 'max-content',
+                width: '100%'//'max-content',
             }"
             class="popover"
         >
-            <div
-                ref="arrowRef"
-                class="arrow"
-                :style="{
-                    left: arrowX != null ? `${arrowX}px` : '',
-                    top: arrowY != null ? `${arrowY}px` : '',
-                    [staticSide]: '-4px',
-                }"
-            />
-            <div
-                class="popover-content"
-                :style="{
-                    maxHeight: popoverMaxHeight ? `${popoverMaxHeight}px` : '',
-                    minHeight: popoverMinHeight ? `${popoverMinHeight}px` : '',
-                    overflowY: 'auto',
-                }"
-            >
-                <span class="font-medium block mb-2">Team Members</span>
-                <ul class="list-none p-0 m-0 flex flex-col gap-4">
-                    <li v-for="member in members" :key="member.name" class="flex items-center gap-2">
-                        <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`"
-                             style="width: 32px"/>
-                        <div>
-                            <span class="font-medium">{{ member.name }}</span>
-                            <div class="text-sm text-surface-500 dark:text-surface-400">{{ member.email }}</div>
-                        </div>
-                        <div class="flex items-center gap-2 text-surface-500 dark:text-surface-400 ml-auto text-sm">
-                            <span>{{ member.role }}</span>
-                            <i class="pi pi-angle-down"></i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <span class="font-medium block mb-2">Team Members</span>
+            <ul class="list-none p-0 m-0 flex flex-col gap-4">
+                <li v-for="member in members" :key="member.name" class="flex items-center gap-2">
+                    <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`"
+                         style="width: 32px"/>
+                    <div>
+                        <span class="font-medium">{{ member.name }}</span>
+                        <div class="text-sm text-surface-500 dark:text-surface-400">{{ member.email }}</div>
+                    </div>
+                    <div class="flex items-center gap-2 text-surface-500 dark:text-surface-400 ml-auto text-sm">
+                        <span>{{ member.role }}</span>
+                        <i class="pi pi-angle-down"></i>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import { useFloating, autoUpdate, offset, flip, size, arrow } from '@floating-ui/vue';
+import { useFloating, autoUpdate, offset, flip, size } from '@floating-ui/vue';
 import { onClickOutside } from '@vueuse/core';
 
 const containerRef = ref();
 const inputGroupRef = ref();
 const floating = ref();
-const arrowRef = ref();
 const showPopover = ref(false);
-const popoverMaxHeight = ref(null);
-const popoverMinHeight = ref(null);
 
 const middleware = computed(() => {
-    if (!containerRef.value || !arrowRef.value) {
-        return [];
+    if (!containerRef.value) {
+        return [offset(10), flip()];
     }
+
     return [
         offset(10),
+        flip(),
         size({
-            padding: 10, // Add padding to prevent touching the edge
             apply({ availableHeight, elements }) {
                 const boundaryEl = containerRef.value;
                 if (!boundaryEl) return;
@@ -101,44 +81,38 @@ const middleware = computed(() => {
 
                 const newMaxWidth = referenceRect.right - (boundaryRect.left + boundaryPaddingLeft);
 
-                const MAX_POPOVER_HEIGHT = 500;
-                const calculatedMaxHeight = Math.min(availableHeight, MAX_POPOVER_HEIGHT);
                 const MIN_POPOVER_HEIGHT = 150;
+                const MAX_POPOVER_HEIGHT = 500;
+                const finalMaxHeight = Math.min(availableHeight, MAX_POPOVER_HEIGHT);
 
-                popoverMaxHeight.value = calculatedMaxHeight;
-                popoverMinHeight.value = MIN_POPOVER_HEIGHT;
+                console.log({
+                    newMaxWidth,
+                    availableHeight,
+                    MAX_POPOVER_HEIGHT,
+                    finalMaxHeight,
+                    MIN_POPOVER_HEIGHT
+                });
 
                 Object.assign(elements.floating.style, {
                     maxWidth: `${newMaxWidth}px`,
+                    maxHeight: `${finalMaxHeight}px`,
+                    minHeight: `${MIN_POPOVER_HEIGHT}px`,
+                    overflowY: 'auto',
                 });
             },
-        }),
-        flip(),
-        arrow({ element: arrowRef.value }),
+        })
     ];
 });
 
-const { x, y, strategy, placement, middlewareData } = useFloating(inputGroupRef, floating, {
+const { x, y, strategy } = useFloating(inputGroupRef, floating, {
     open: showPopover,
     placement: 'bottom-end',
     middleware: middleware,
     whileElementsMounted: autoUpdate,
 });
 
-const arrowX = computed(() => middlewareData.value.arrow?.x);
-const arrowY = computed(() => middlewareData.value.arrow?.y);
-const staticSide = computed(() => {
-    return {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-    }[placement.value.split('-')[0]];
-});
-
-
 onClickOutside(floating, () => {
-    showPopover.value = false;
+    showPopover.value = false
 }, { ignore: [inputGroupRef] });
 
 const members = ref([
@@ -157,7 +131,13 @@ const members = ref([
 ]);
 
 const toggle = () => {
-    showPopover.value = !showPopover.value;
+    showPopover.value = !showPopover.value
+}
+
+const open = () => {
+    if (!showPopover.value) {
+        showPopover.value = true
+    }
 }
 </script>
 
@@ -166,29 +146,15 @@ const toggle = () => {
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
+    padding: 1rem;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-.popover-content {
-  padding: 1rem;
-}
-
-.arrow {
-    position: absolute;
-    background: #ffffff;
-    width: 8px;
-    height: 8px;
-    transform: rotate(45deg);
+    color: #000000;
 }
 
 .dark .popover {
     background: #1e293b;
     border-color: #475569;
-    color: #ffffff;
-}
-
-.dark .arrow {
-    background: #1e293b;
+    color: #000000;
 }
 
 .input-group-test {

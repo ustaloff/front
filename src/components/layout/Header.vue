@@ -1,12 +1,54 @@
+<template>
+    <header class="app-header">
+        <div class="header-content container">
+            <button
+                class="toggle-button"
+                @click="handleToggleClick"
+                :aria-label="toggleAriaLabel"
+            >
+                <span class="toggle-icon" :class="{ 'is-open': isToggleActive }">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+            <div class="logo">
+                <router-link to="/">CodeCraft</router-link>
+            </div>
+            <nav class="main-nav">
+                <router-link v-if="auth.user" to="/profile">Профиль</router-link>
+                <router-link v-if="auth.user" to="/admin">Админ</router-link>
+            </nav>
+            <SearchWidget/>
+            <div class="auth-section">
+                <span v-if="auth.user" class="user-greeting">
+                    Привет, {{ auth.user.email }}
+                </span>
+                <button v-if="auth.user" @click="auth.logout" class="btn-primary">
+                    Выйти
+                </button>
+                <div v-else class="auth-links">
+                    <button @click="openLoginDialog" class="btn-primary">Войти</button>
+                    <button @click="openRegisterDialog" class="btn-secondary">Регистрация</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <LoginDialog/>
+    <RegisterDialog/>
+</template>
+
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 import { useSidebar } from '@/composables/useSidebar'
 import { computed } from 'vue'
 import { useLoginDialog } from '@/composables/useLoginDialog'
-import LoginDialog from '@/components/auth/LoginDialog.vue'
 import { useRegisterDialog } from '@/composables/useRegisterDialog'
-import RegisterDialog from '@/components/auth/RegisterDialog.vue'
 import { UI_CONFIG } from '@/config'
+
+import LoginDialog from '@/components/auth/LoginDialog.vue'
+import RegisterDialog from '@/components/auth/RegisterDialog.vue'
+import SearchWidget from '@/components/ui/SearchWidget.vue'
 
 const auth = useAuthStore()
 const { isOpen, isExpanded, isMobile, toggleSidebar } = useSidebar(UI_CONFIG.SIDEBAR_BREAKPOINT)
@@ -29,45 +71,6 @@ const toggleAriaLabel = computed(() => {
     }
 })
 </script>
-
-<template>
-    <header class="app-header">
-        <div class="header-content container">
-            <button
-                class="toggle-button"
-                @click="handleToggleClick"
-                :aria-label="toggleAriaLabel"
-            >
-                <span class="toggle-icon" :class="{ 'is-open': isToggleActive }">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
-            </button>
-            <div class="logo">
-                <router-link to="/">CodeCraft</router-link>
-            </div>
-            <nav class="main-nav">
-                <router-link v-if="auth.user" to="/profile">Профиль</router-link>
-                <router-link v-if="auth.user" to="/admin">Админ</router-link>
-            </nav>
-            <div class="auth-section">
-                <span v-if="auth.user" class="user-greeting">
-                    Привет, {{ auth.user.email }}
-                </span>
-                <button v-if="auth.user" @click="auth.logout" class="btn-primary">
-                    Выйти
-                </button>
-                <div v-else class="auth-links">
-                    <button @click="openLoginDialog" class="btn-primary">Войти</button>
-                    <button @click="openRegisterDialog" class="btn-secondary">Регистрация</button>
-                </div>
-            </div>
-        </div>
-    </header>
-    <LoginDialog/>
-    <RegisterDialog/>
-</template>
 
 <style lang="scss" scoped>
 @use 'sass:color';

@@ -1,6 +1,6 @@
 <template>
     <div class="search-widget-wrapper">
-        <InputGroup ref="inputGroupRef" class="input-group-test">
+        <InputGroup ref="triggerRef" class="input-group-test" @click="open">
             <InputGroupAddon>
                 <Button label="Providers"/>
             </InputGroupAddon>
@@ -17,64 +17,47 @@
                         </path>
                     </svg>
                 </InputIcon>
-                <InputText placeholder="Search" @click="toggle"/>
+                <InputText placeholder="Search"/>
             </IconField>
         </InputGroup>
 
-        <div
-            ref="floating"
-            v-if="showPopover"
-            :style="{
-                position: strategy,
-                top: `${y ?? 0}px`,
-                left: `${x ?? 0}px`,
-                width: 'max-content',
-            }"
-            class="popover"
+        <FloatingPanel
+            ref="floatingPanelRef"
+            :show="showPopover"
+            :x="x"
+            :y="y"
+            :strategy="strategy"
+            :show-arrow="props.showArrow"
+            :arrow-x="arrowX"
+            :arrow-y="arrowY"
+            :static-side="staticSide"
+            :popover-max-height="popoverMaxHeight"
+            :popover-min-height="popoverMinHeight"
         >
-            <div
-                ref="arrowRef"
-                class="arrow"
-                v-if="showArrow"
-                :style="{
-                    left: arrowX != null ? `${arrowX}px` : '',
-                    top: arrowY != null ? `${arrowY}px` : '',
-                    [staticSide]: '-4px',
-                }"
-            />
-            <div
-                class="popover-content"
-                :style="{
-                    maxHeight: popoverMaxHeight ? `${popoverMaxHeight}px` : '',
-                    minHeight: popoverMinHeight ? `${popoverMinHeight}px` : '',
-                    overflowY: 'auto',
-                }"
-            >
-                <span class="font-medium block mb-2">Team Members</span>
-                <ul class="list-none p-0 m-0 flex flex-col gap-4">
-                    <li v-for="member in members" :key="member.name" class="flex items-center gap-2">
-                        <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`"
-                             style="width: 32px"/>
-                        <div>
-                            <span class="font-medium">{{ member.name }}</span>
-                            <div class="text-sm text-surface-500 dark:text-surface-400">{{ member.email }}</div>
-                        </div>
-                        <div class="flex items-center gap-2 text-surface-500 dark:text-surface-400 ml-auto text-sm">
-                            <span>{{ member.role }}</span>
-                            <i class="pi pi-angle-down"></i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+            <span class="font-medium block mb-2">Team Members</span>
+            <ul class="list-none p-0 m-0 flex flex-col gap-4">
+                <li v-for="member in members" :key="member.name" class="flex items-center gap-2">
+                    <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`"
+                         style="width: 32px"/>
+                    <div>
+                        <span class="font-medium">{{ member.name }}</span>
+                        <div class="text-sm text-surface-500 dark:text-surface-400">{{ member.email }}</div>
+                    </div>
+                    <div class="flex items-center gap-2 text-surface-500 dark:text-surface-400 ml-auto text-sm">
+                        <span>{{ member.role }}</span>
+                        <i class="pi pi-angle-down"></i>
+                    </div>
+                </li>
+            </ul>
+        </FloatingPanel>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, toRefs } from "vue";
-import { useFloating, autoUpdate, offset, flip, size, arrow } from '@floating-ui/vue';
-import { onClickOutside } from '@vueuse/core';
+import { ref, computed } from "vue";
 import { UI_CONFIG } from '@/config';
+import { useFloatingPanel } from '@/composables/useFloatingPanel.js';
+import FloatingPanel from '@/components/ui/FloatingPanel.vue';
 
 const props = defineProps({
     boundaryElement: {
@@ -95,74 +78,27 @@ const props = defineProps({
     }
 });
 
-const { boundaryElement, maxHeight, minHeight, showArrow } = toRefs(props);
+const triggerRef = ref(null);
+const floatingPanelRef = ref(null);
 
-const inputGroupRef = ref();
-const floating = ref();
-const arrowRef = ref();
-const showPopover = ref(false);
-const popoverMaxHeight = ref(null);
-const popoverMinHeight = ref(null);
+const floatingRef = computed(() => floatingPanelRef.value?.floatingElement);
+const arrowRef = computed(() => floatingPanelRef.value?.arrowElement);
 
-const middleware = computed(() => {
-    const boundaryEl = boundaryElement.value;
+const {
+    showPopover,
+    popoverMaxHeight,
+    popoverMinHeight,
+    x,
+    y,
+    strategy,
+    arrowX,
+    arrowY,
+    staticSide,
+    toggle,
+    close,
+    open,
+} = useFloatingPanel(props, triggerRef, floatingRef, arrowRef);
 
-    if (!boundaryEl) {
-        return [];
-    }
-
-    const middlewareStack = [
-        offset(10),
-        size({
-            padding: 10,
-            apply({ availableHeight, elements }) {
-                const referenceRect = elements.reference.getBoundingClientRect();
-                const boundaryRect = boundaryEl.getBoundingClientRect();
-                const boundaryStyle = getComputedStyle(boundaryEl);
-                const boundaryPaddingLeft = parseFloat(boundaryStyle.paddingLeft);
-
-                const newMaxWidth = referenceRect.right - (boundaryRect.left + boundaryPaddingLeft);
-
-                popoverMaxHeight.value = Math.min(availableHeight, maxHeight.value);
-                popoverMinHeight.value = minHeight.value;
-
-                Object.assign(elements.floating.style, {
-                    maxWidth: `${newMaxWidth}px`,
-                });
-            },
-        }),
-        flip(),
-    ];
-
-    if (showArrow.value && arrowRef.value) {
-        middlewareStack.push(arrow({ element: arrowRef.value }));
-    }
-
-    return middlewareStack;
-});
-
-const { x, y, strategy, placement, middlewareData } = useFloating(inputGroupRef, floating, {
-    open: showPopover,
-    placement: 'bottom-end',
-    middleware: middleware,
-    whileElementsMounted: autoUpdate,
-});
-
-const arrowX = computed(() => middlewareData.value.arrow?.x);
-const arrowY = computed(() => middlewareData.value.arrow?.y);
-const staticSide = computed(() => {
-    return {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-    }[placement.value.split('-')[0]];
-});
-
-
-onClickOutside(floating, () => {
-    showPopover.value = false;
-}, { ignore: [inputGroupRef] });
 
 const members = ref([
     { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
@@ -179,42 +115,9 @@ const members = ref([
     { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' },
 ]);
 
-const toggle = () => {
-    showPopover.value = !showPopover.value;
-}
 </script>
 
 <style scoped lang="scss">
-.popover {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    z-index: 999;
-}
-
-.popover-content {
-    padding: 1rem;
-}
-
-.arrow {
-    position: absolute;
-    background: #ffffff;
-    width: 8px;
-    height: 8px;
-    transform: rotate(45deg);
-}
-
-.dark .popover {
-    background: #1e293b;
-    border-color: #475569;
-    color: #ffffff;
-}
-
-.dark .arrow {
-    background: #1e293b;
-}
-
 .input-group-test {
     max-width: 300px;
     margin-inline: auto;

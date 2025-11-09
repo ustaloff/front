@@ -84,9 +84,10 @@ main {
 
 .container {
   width: 100%;
-  max-width: calc(#{$container-width} + #{$container-padding-x} * 2);
-  padding-inline: $container-padding-x;
+  max-width: #{$container-width};
+  padding-inline: #{$container-padding-x};
   margin-inline: auto;
+
   container: container / inline-size;
 
   &--fluid {
@@ -96,12 +97,12 @@ main {
 
 @media (max-width: calc(#{$container-width} + #{$container-padding-x} * 2 + #{$sidebar-width} * 2)) {
   header, main, footer {
-    margin-inline-start: 0;
+    padding-inline-start: 0;
     transition: padding-inline-start 0.3s ease;
   }
 
   body:not(:has(.sidebar--mobile)) :where(header, main, footer) {
-    margin-inline-start: calc(var(--sidebar-current-width) + 0px);
+    padding-inline-start: calc(var(--sidebar-current-width) + 0px);
   }
 }
 

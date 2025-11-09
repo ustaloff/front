@@ -28,15 +28,15 @@
                 position: strategy,
                 top: `${y ?? 0}px`,
                 left: `${x ?? 0}px`,
-                //width: 'max-content',
-                width: '100%',
+                width: 'max-content',
             }"
             class="popover"
         >
             <span class="font-medium block mb-2">Team Members</span>
             <ul class="list-none p-0 m-0 flex flex-col gap-4">
                 <li v-for="member in members" :key="member.name" class="flex items-center gap-2">
-                    <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`" style="width: 32px" />
+                    <img :src="`https://primefaces.org/cdn/primevue/images/avatar/${member.image}`"
+                         style="width: 32px"/>
                     <div>
                         <span class="font-medium">{{ member.name }}</span>
                         <div class="text-sm text-surface-500 dark:text-surface-400">{{ member.email }}</div>
@@ -64,31 +64,29 @@ const middleware = computed(() => {
     if (!containerRef.value) {
         return [offset(10), flip()];
     }
+
     return [
         offset(10),
         flip(),
-                size({
-                    apply({ availableWidth, elements }) {
-                        const boundaryEl = containerRef.value;
-                        if (!boundaryEl) return;
-        
-                        const style = getComputedStyle(boundaryEl);
-                        //const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-                        const paddingX = parseFloat(style.paddingInlineStart);
-                        const newMaxWidth = availableWidth - paddingX;
-        
-                        console.log({
-                            originalAvailableWidth: availableWidth,
-                            paddingX,
-                            newMaxWidth
-                        });
-        
-                        Object.assign(elements.floating.style, {
-                            maxWidth: `${newMaxWidth}px`,
-                        });
-                    },
-                    boundary: containerRef.value,
-                })
+        size({
+            apply({ availableWidth, elements }) {
+                const boundaryEl = containerRef.value
+                const style = getComputedStyle(boundaryEl)
+                const padding = parseFloat(style.paddingInlineStart)
+                const maxWidth = availableWidth - padding
+
+                console.log({
+                    originalAvailableWidth: availableWidth,
+                    padding,
+                    maxWidth
+                });
+
+                Object.assign(elements.floating.style, {
+                    maxWidth: `${maxWidth}px`,
+                });
+            },
+            boundary: containerRef.value,
+        })
     ];
 });
 

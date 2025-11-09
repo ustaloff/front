@@ -66,7 +66,10 @@ export const VALIDATION = {
 // === UI CONFIG ===
 
 export const UI_CONFIG = {
-    SIDEBAR_BREAKPOINT: 'lg'
+    SIDEBAR_BREAKPOINT: 'lg',
+    POPOVER_MAX_HEIGHT: 500,
+    POPOVER_MIN_HEIGHT: 150,
+    POPOVER_SHOW_ARROW: false,
 }
 
 export default {

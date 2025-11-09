@@ -1,6 +1,6 @@
 <template>
     <header class="app-header">
-        <div class="header-content container">
+        <div class="header-content container" ref="headerContainerRef">
             <button
                 class="toggle-button"
                 @click="handleToggleClick"
@@ -19,7 +19,7 @@
                 <router-link v-if="auth.user" to="/profile">Профиль</router-link>
                 <router-link v-if="auth.user" to="/admin">Админ</router-link>
             </nav>
-            <SearchWidget/>
+            <SearchWidget :boundary-element="headerContainerRef" :max-height="400" :show-arrow="false"/>
             <div class="auth-section">
                 <span v-if="auth.user" class="user-greeting">
                     Привет, {{ auth.user.email }}
@@ -41,7 +41,7 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 import { useSidebar } from '@/composables/useSidebar'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useLoginDialog } from '@/composables/useLoginDialog'
 import { useRegisterDialog } from '@/composables/useRegisterDialog'
 import { UI_CONFIG } from '@/config'
@@ -51,6 +51,7 @@ import RegisterDialog from '@/components/auth/RegisterDialog.vue'
 import SearchWidget from '@/components/ui/SearchWidget.vue'
 
 const auth = useAuthStore()
+const headerContainerRef = ref(null);
 const { isOpen, isExpanded, isMobile, toggleSidebar } = useSidebar(UI_CONFIG.SIDEBAR_BREAKPOINT)
 const { openLoginDialog } = useLoginDialog()
 const { openRegisterDialog } = useRegisterDialog()

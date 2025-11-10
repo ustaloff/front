@@ -10,9 +10,6 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
     const popoverMaxHeight = ref(null);
     const popoverMinHeight = ref(null);
 
-    // Define the effective placement once, using the default from UI_CONFIG.
-    const effectivePlacement = computed(() => placementProp.value || UI_CONFIG.POPOVER_DEFAULT_PLACEMENT);
-
     const middleware = computed(() => {
         const boundaryEl = boundaryElement.value;
         const middlewareStack = [
@@ -28,8 +25,7 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
                         const boundaryRect = boundaryEl.getBoundingClientRect();
                         let newMaxWidth;
 
-                        // Use the single source of truth for placement.
-                        if (effectivePlacement.value.includes('start')) {
+                        if (placementProp.value.includes('start')) {
                             // Starts at trigger-left, ends at boundary-right
                             newMaxWidth = boundaryRect.right - referenceRect.left;
                         } else { // Assumes 'end' or other
@@ -55,7 +51,7 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
 
     const { x, y, strategy, placement, middlewareData } = useFloating(triggerRef, floatingRef, {
         open: showPopover,
-        placement: effectivePlacement.value,
+        placement: placementProp.value,
         middleware: middleware,
         whileElementsMounted: autoUpdate,
     });

@@ -19,11 +19,14 @@
                 <router-link v-if="auth.user" to="/profile">Профиль</router-link>
                 <router-link v-if="auth.user" to="/admin">Админ</router-link>
             </nav>
+
             <SearchWidget
                 :boundary-element="headerContainerRef"
                 :max-height="400"
                 :show-arrow="false"
-                placement="bottom-end"/>
+                placement="bottom-end"
+            />
+
             <div class="auth-section">
                 <span v-if="auth.user" class="user-greeting">
                     Привет, {{ auth.user.email }}

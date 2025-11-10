@@ -23,6 +23,7 @@
             <SearchWidget
                 :boundary-element="headerContainerRef"
                 :max-height="400"
+                :min-height="100"
                 :show-arrow="false"
                 placement="bottom-end"
             />

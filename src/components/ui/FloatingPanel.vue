@@ -6,7 +6,7 @@
             position: strategy,
             top: `${y ?? 0}px`,
             left: `${x ?? 0}px`,
-            width: 'max-content',
+            width: '100%',
         }"
         class="popover"
     >

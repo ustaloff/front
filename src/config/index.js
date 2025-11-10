@@ -70,6 +70,7 @@ export const UI_CONFIG = {
     POPOVER_MAX_HEIGHT: 500,
     POPOVER_MIN_HEIGHT: 150,
     POPOVER_SHOW_ARROW: false,
+    POPOVER_DEFAULT_PLACEMENT: 'bottom-start',
 }
 
 export default {

@@ -1,37 +1,46 @@
 import { ref, computed, toRefs } from "vue";
 import { useFloating, autoUpdate, offset, flip, size, arrow } from '@floating-ui/vue';
 import { onClickOutside } from '@vueuse/core';
+import { UI_CONFIG } from '@/config';
 
 export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
-    const { boundaryElement, maxHeight, minHeight, showArrow } = toRefs(props);
+    const { boundaryElement, maxHeight, minHeight, showArrow, placement: placementProp } = toRefs(props);
 
     const showPopover = ref(false);
     const popoverMaxHeight = ref(null);
     const popoverMinHeight = ref(null);
 
+    // Define the effective placement once, using the default from UI_CONFIG.
+    const effectivePlacement = computed(() => placementProp.value || UI_CONFIG.POPOVER_DEFAULT_PLACEMENT);
+
     const middleware = computed(() => {
         const boundaryEl = boundaryElement.value;
-        if (!boundaryEl) {
-            return [];
-        }
         const middlewareStack = [
             offset(10),
             size({
                 padding: 10,
                 apply({ availableHeight, elements }) {
-                    const referenceRect = elements.reference.getBoundingClientRect();
-                    const boundaryRect = boundaryEl.getBoundingClientRect();
-                    const boundaryStyle = getComputedStyle(boundaryEl);
-                    const boundaryPaddingLeft = parseFloat(boundaryStyle.paddingLeft);
-
-                    const newMaxWidth = referenceRect.right - (boundaryRect.left + boundaryPaddingLeft);
-
                     popoverMaxHeight.value = Math.min(availableHeight, maxHeight.value);
                     popoverMinHeight.value = minHeight.value;
 
-                    Object.assign(elements.floating.style, {
-                        maxWidth: `${newMaxWidth}px`,
-                    });
+                    if (boundaryEl) {
+                        const referenceRect = elements.reference.getBoundingClientRect();
+                        const boundaryRect = boundaryEl.getBoundingClientRect();
+                        let newMaxWidth;
+
+                        // Use the single source of truth for placement.
+                        if (effectivePlacement.value.includes('start')) {
+                            // Starts at trigger-left, ends at boundary-right
+                            newMaxWidth = boundaryRect.right - referenceRect.left;
+                        } else { // Assumes 'end' or other
+                            // Starts at boundary-left, ends at trigger-right
+                            newMaxWidth = referenceRect.right - boundaryRect.left;
+                        }
+
+                        elements.floating.style.maxWidth = `${newMaxWidth}px`;
+                    } else {
+                        elements.floating.style.maxWidth = '';
+                    }
                 },
             }),
             flip(),
@@ -46,7 +55,7 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
 
     const { x, y, strategy, placement, middlewareData } = useFloating(triggerRef, floatingRef, {
         open: showPopover,
-        placement: 'bottom-end',
+        placement: effectivePlacement.value,
         middleware: middleware,
         whileElementsMounted: autoUpdate,
     });

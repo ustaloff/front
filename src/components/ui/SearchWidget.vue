@@ -22,6 +22,7 @@
         </InputGroup>
 
         <FloatingPanel
+            v-if="triggerEl"
             ref="floatingPanelRef"
             :show="showPopover"
             :x="x"
@@ -75,11 +76,16 @@ const props = defineProps({
     showArrow: {
         type: Boolean,
         default: UI_CONFIG.POPOVER_SHOW_ARROW
+    },
+    placement: {
+        type: String,
     }
 });
 
 const triggerRef = ref(null);
 const floatingPanelRef = ref(null);
+
+const triggerEl = computed(() => triggerRef.value?.$el);
 
 const floatingRef = computed(() => floatingPanelRef.value?.floatingElement);
 const arrowRef = computed(() => floatingPanelRef.value?.arrowElement);
@@ -97,8 +103,7 @@ const {
     toggle,
     close,
     open,
-} = useFloatingPanel(props, triggerRef, floatingRef, arrowRef);
-
+} = useFloatingPanel(props, triggerEl, floatingRef, arrowRef);
 
 const members = ref([
     { name: 'Amy Elsner Amy  Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },

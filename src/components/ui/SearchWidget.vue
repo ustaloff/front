@@ -105,9 +105,9 @@ const {
     arrowX,
     arrowY,
     staticSide,
-    toggle,
-    close,
     open,
+    close,
+    toggle
 } = useFloatingPanel(props, triggerEl, floatingRef, arrowRef);
 
 const members = ref([

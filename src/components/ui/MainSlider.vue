@@ -56,8 +56,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import { useDraggable } from '@vueuse/core';
+import { computed, ref } from 'vue';
+import { useSwipe } from '@vueuse/core';
 
 // Data for the slides
 const slidesData = ref([
@@ -109,66 +109,26 @@ const prev = () => {
 
 // Swipe gesture implementation using manual event listeners for proper swipe detection
 const sliderWrapperRef = ref(null);
-let startX = 0;
-let isManualDragging = false;
+//const el = useTemplateRef('sliderWrapperRef')
 
-// Manual swipe detection using event listeners
-const handleTouchStart = (e) => {
-    isManualDragging = true;
-    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-};
+const { isSwiping, direction, lengthX, lengthY } = useSwipe(sliderWrapperRef, {
+    onSwipeEnd: () => {
+        const SWIPE_THRESHOLD = 50;
 
-const handleTouchEnd = (e) => {
-    if (!isManualDragging) return;
-    isManualDragging = false;
-
-    const endX = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
-    const dragDistance = endX - startX; // Calculate relative movement
-    const SWIPE_THRESHOLD = 50;
-
-    if (dragDistance < -SWIPE_THRESHOLD) { // Swiped left (finger moves left on screen)
-        console.log('next', dragDistance, SWIPE_THRESHOLD);
-        next();
-    } else if (dragDistance > SWIPE_THRESHOLD) { // Swiped right (finger moves right on screen)
-        console.log('prev', dragDistance, SWIPE_THRESHOLD);
-        prev();
-    }
-};
-
-// Prevent default context menu on the slider
-const handleContextMenu = (e) => {
-    e.preventDefault();
-};
-
-// Add event listeners when component mounts
-onMounted(() => {
-    const sliderElement = sliderWrapperRef.value;
-    if (sliderElement) {
-        sliderElement.addEventListener('touchstart', handleTouchStart);
-        sliderElement.addEventListener('mousedown', handleTouchStart);
-        document.addEventListener('touchend', handleTouchEnd);
-        document.addEventListener('mouseup', handleTouchEnd);
-        sliderElement.addEventListener('contextmenu', handleContextMenu);
+        if (Math.abs(lengthX.value) > SWIPE_THRESHOLD) {
+            if (lengthX.value < 0) { // Swiped left (finger moves left on screen)
+                console.log('next', lengthX.value, SWIPE_THRESHOLD);
+                next();
+            } else { // Swiped right (finger moves right on screen)
+                console.log('prev', lengthX.value, SWIPE_THRESHOLD);
+                prev();
+            }
+        }
     }
 });
 
-// Remove event listeners when component unmounts
-onUnmounted(() => {
-    const sliderElement = sliderWrapperRef.value;
-    if (sliderElement) {
-        sliderElement.removeEventListener('touchstart', handleTouchStart);
-        sliderElement.removeEventListener('mousedown', handleTouchStart);
-        document.removeEventListener('touchend', handleTouchEnd);
-        document.removeEventListener('mouseup', handleTouchEnd);
-        sliderElement.removeEventListener('contextmenu', handleContextMenu);
-    }
-});
-
-// Use the isDragging from useDraggable just for visual feedback
-const { isDragging } = useDraggable(sliderWrapperRef, {
-// Only use for visual feedback, not for swipe detection
-    preventDefault: false,
-});
+// Use isDragging from useSwipe for visual feedback
+const isDragging = isSwiping;
 </script>
 
 <style scoped>

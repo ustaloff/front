@@ -21,13 +21,13 @@
             <div
                 class="slides-wrapper"
                 ref="sliderWrapperRef"
-                :class="{ 'is-dragging': isDragging }"
+                :class="{ 'is-dragging': carousel.isSwiping }"
             >
                 <div
                     v-for="(slide, index) in slidesData"
                     :key="index"
-                    :class="['slide', getSlideClass(index)]"
-                    :style="getSlideStyle(index)"
+                    :class="['slide', carousel.getSlideClass(index)]"
+                    :style="carousel.getSlideStyle(index)"
                 >
                     <div class="ring-container">
                         <img :src="slide.ringImage" :alt="slide.title" class="ring-image" draggable="false"/>
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <button @click="prev" class="nav-button prev-button">
+            <button @click="carousel.prev" class="nav-button prev-button">
                 <svg width="49" height="49" viewBox="0 0 49 49" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="49" height="49" rx="24.5" fill="#144A3C" fill-opacity="0.8"/>
                     <path
@@ -43,7 +43,7 @@
                         fill="white" stroke="white"/>
                 </svg>
             </button>
-            <button @click="next" class="nav-button next-button">
+            <button @click="carousel.next" class="nav-button next-button">
                 <svg width="49" height="49" viewBox="0 0 49 49" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="48.998" y="49" width="49" height="49" rx="24.5" transform="rotate(-180 48.998 49)"
                           fill="#144A3C" fill-opacity="0.8"/>
@@ -57,8 +57,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
-import { useSwipe } from '@vueuse/core';
+import { ref, computed } from 'vue';
+import { use3DCarousel } from '@/composables/use3DCarousel';
 
 // Data for the slides
 const slidesData = ref([
@@ -88,22 +88,6 @@ const slidesData = ref([
     },
     {
         smallTitle: 'SELECT YOUR BONUS',
-        title: 'Ruby Welcome Bonus',
-        spins: '300',
-        game: 'Gates of Olympus',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Sapphire Welcome Bonus',
-        spins: '150',
-        game: 'Sweet Bonanza',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
         title: 'Emerald Welcome Bonus',
         spins: '200',
         game: 'Sugar Rush',
@@ -134,91 +118,26 @@ const slidesData = ref([
         gameIcon: '/sugar-rush-icon.png', // Placeholder
         ringImage: '/ring-3.png' // Using provided image
     },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Sapphire Welcome Bonus',
-        spins: '150',
-        game: 'Sweet Bonanza',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
-    },
 ]);
 
-// Reactive variable to hold the index of the currently active slide
-const activeIndex = ref(0);
+const sliderWrapperRef = ref(null);
+
+// Initialize the 3D carousel composable with options
+const carousel = use3DCarousel({
+    slidesData: slidesData,
+    sliderWrapperRef: sliderWrapperRef,  // Pass the ref to the composable
+    radius: 200,
+    maxVisibleAngle: Math.PI / 1.8,
+    minScale: 0.5,
+    minOpacity: 0.9,
+    maxRotation: 30,
+    swipeThreshold: 100
+});
 
 // Computed property to get the data of the currently active slide
 const currentSlideData = computed(() => {
-    return slidesData.value[activeIndex.value];
+    return slidesData.value[carousel.baseActiveIndex.value];
 });
-
-// Navigation functions for circular navigation
-const next = () => {
-    activeIndex.value = (activeIndex.value + 1) % slidesData.value.length;
-};
-
-const prev = () => {
-    activeIndex.value = (activeIndex.value - 1 + slidesData.value.length) % slidesData.value.length;
-};
-
-// Function to determine the style for each slide based on its position in the 3D carousel
-const getSlideStyle = (index) => {
-    const totalSlides = slidesData.value.length;
-    const angleStep = (2 * Math.PI) / totalSlides; // Angle between each slide
-    const activeAngle = (2 * Math.PI * activeIndex.value) / totalSlides; // Angle of active slide
-    const currentAngle = (2 * Math.PI * index) / totalSlides; // Angle of current slide
-
-    // Calculate angle difference from active slide
-    let angleDiff = currentAngle - activeAngle;
-
-    // Normalize angle to be between -π and π
-    while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
-    while (angleDiff <= -Math.PI) angleDiff += 2 * Math.PI;
-
-    // Calculate position on the carousel
-    const radius = 400; // Radius of the carousel (in pixels)
-    const x = Math.sin(angleDiff) * radius;
-    const z = (Math.cos(angleDiff) * radius) / 2; // Reduce Z effect for better visual
-    const scale = 1 - (Math.abs(angleDiff) / Math.PI) * 0.5; // Scale based on angle
-    const opacity = 1 - (Math.abs(angleDiff) / Math.PI) * 0.7; // Opacity based on angle
-    const zIndex = Math.round(100 - Math.abs(angleDiff) * 10); // Z-index based on angle
-
-    return {
-        transform: `translateX(${x}px) translateZ(${z}px) scale(${scale})`,
-        zIndex: zIndex,
-        filter: `blur(${(1 - opacity) * 2}px)`,
-        opacity: opacity,
-        visibility: 'visible'
-    };
-};
-
-// Function to determine the class for each slide (simplified for 3D carousel)
-const getSlideClass = (index) => {
-    return 'slide-3d';
-};
-
-// Swipe gesture implementation using manual event listeners for proper swipe detection
-const sliderWrapperRef = ref(null);
-//const el = useTemplateRef('sliderWrapperRef')
-
-const { isSwiping, direction, lengthX, lengthY } = useSwipe(sliderWrapperRef, {
-    onSwipeEnd: () => {
-        const SWIPE_THRESHOLD = 50;
-
-        if (Math.abs(lengthX.value) > SWIPE_THRESHOLD) {
-            if (lengthX.value < 0) { // Swiped left (finger moves left on screen)
-                console.log('next', lengthX.value, SWIPE_THRESHOLD);
-                next();
-            } else { // Swiped right (finger moves right on screen)
-                console.log('prev', lengthX.value, SWIPE_THRESHOLD);
-                prev();
-            }
-        }
-    }
-});
-
-// Use isDragging from useSwipe for visual feedback
-const isDragging = isSwiping;
 </script>
 
 <style scoped>
@@ -267,7 +186,7 @@ const isDragging = isSwiping;
     -ms-user-select: none;
     user-select: none;
     /* Enable 3D perspective for the carousel */
-    perspective: 1000px;
+    perspective: 1000px; /* Adjusted perspective for wider view */
     transform-style: preserve-3d;
 }
 
@@ -282,9 +201,11 @@ const isDragging = isSwiping;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.7s ease, filter 0.7s ease, opacity 0.7s ease; /* Removed z-index transition as it's controlled by dynamic styles */
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease, opacity 0.6s ease; /* Smoother transition with custom easing */
     transform-origin: center center;
+    transform-style: preserve-3d; /* Preserve 3D for child elements */
     pointer-events: none; /* Allow swipe events to pass through to the wrapper */
+    backface-visibility: hidden; /* Hide back of element during 3D transformation */
 }
 
 /* 3D Carousel styles */
@@ -295,26 +216,43 @@ const isDragging = isSwiping;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.7s ease, filter 0.7s ease, opacity 0.7s ease, z-index 0.7s ease;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease, opacity 0.6s ease, z-index 0.6s ease;
     transform-origin: center center;
+    transform-style: preserve-3d;
     pointer-events: none;
     backface-visibility: hidden; /* Hide back of element during 3D transformation */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Add subtle shadow for depth */
+    border-radius: 12px; /* Add slight rounding */
 }
 
-.slides-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    /* Enable 3D perspective */
-    perspective: 1000px;
+/* Position classes based on slide state */
+.slide-active {
+    transform: translateX(0%) scale(1.1);
+    filter: blur(0);
+    opacity: 1;
+    z-index: 3;
+}
+
+.slide-prev { /* Left slide */
+    transform: translateX(-100%) scale(0.7);
+    filter: blur(3px);
+    opacity: 0.7;
+    z-index: 1;
+}
+
+.slide-next { /* Right slide */
+    transform: translateX(100%) scale(0.7);
+    filter: blur(3px);
+    opacity: 0.7;
+    z-index: 1;
+}
+
+.slide-hidden {
+    transform: translateX(200%) scale(0.7);
+    filter: blur(5px);
+    opacity: 0;
+    z-index: 0;
+    visibility: hidden;
 }
 
 .ring-container {

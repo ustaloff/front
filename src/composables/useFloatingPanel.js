@@ -4,7 +4,7 @@ import { onClickOutside } from '@vueuse/core';
 import { UI_CONFIG } from '@/config';
 
 export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
-    const { boundaryElement, maxHeight, minHeight, showArrow, placement: placementProp } = toRefs(props);
+    const { boundaryElement, maxHeight, minHeight, showArrow, placement: placementProp, offset: panelOffset } = toRefs(props);
 
     const showPopover = ref(false);
     const popoverMaxHeight = ref(null);
@@ -33,7 +33,7 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
                             newMaxWidth = referenceRect.right - boundaryRect.left;
                         }
 
-                        elements.floating.style.maxWidth = `${newMaxWidth}px`;
+                        elements.floating.style.maxWidth = `${newMaxWidth - panelOffset.value}px`;
                     } else {
                         elements.floating.style.maxWidth = '';
                     }
@@ -72,16 +72,16 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
         showPopover.value = false;
     }, { ignore: [triggerRef] });
 
-    const toggle = () => {
-        showPopover.value = !showPopover.value;
+    const open = () => {
+        showPopover.value = true;
     };
 
     const close = () => {
         showPopover.value = false;
     };
 
-    const open = () => {
-        showPopover.value = true;
+    const toggle = () => {
+        showPopover.value = !showPopover.value;
     };
 
     return {
@@ -100,8 +100,8 @@ export function useFloatingPanel(props, triggerRef, floatingRef, arrowRef) {
         staticSide,
 
         // Methods
-        toggle,
+        open,
         close,
-        open
+        toggle
     };
 }

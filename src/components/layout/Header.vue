@@ -22,6 +22,7 @@
 
             <SearchWidget
                 :boundary-element="headerContainerRef"
+                :offset="dynamicOffset"
                 :max-height="400"
                 :min-height="100"
                 :show-arrow="false"
@@ -53,6 +54,7 @@ import { computed, ref } from 'vue'
 import { useLoginDialog } from '@/composables/useLoginDialog'
 import { useRegisterDialog } from '@/composables/useRegisterDialog'
 import { UI_CONFIG } from '@/config'
+import { useResizeObserver } from '@vueuse/core'
 
 import LoginDialog from '@/components/auth/LoginDialog.vue'
 import RegisterDialog from '@/components/auth/RegisterDialog.vue'
@@ -60,9 +62,18 @@ import SearchWidget from '@/components/ui/SearchWidget.vue'
 
 const auth = useAuthStore()
 const headerContainerRef = ref(null);
+const dynamicOffset = ref(0);
 const { isOpen, isExpanded, isMobile, toggleSidebar } = useSidebar(UI_CONFIG.SIDEBAR_BREAKPOINT)
 const { openLoginDialog } = useLoginDialog()
 const { openRegisterDialog } = useRegisterDialog()
+
+useResizeObserver(headerContainerRef, (entries) => {
+    const entry = entries[0]
+    if (entry) {
+        const styles = getComputedStyle(entry.target);
+        dynamicOffset.value = parseFloat(styles.paddingInlineStart) || 0;
+    }
+});
 
 const handleToggleClick = () => {
     toggleSidebar()

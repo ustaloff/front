@@ -80,6 +80,10 @@ const props = defineProps({
     placement: {
         type: String,
         default: UI_CONFIG.POPOVER_PLACEMENT
+    },
+    offset: {
+        type: Number,
+        default: 0
     }
 });
 

@@ -167,14 +167,14 @@ const getSlideStyle = (index) => {
     const angleStep = (2 * Math.PI) / totalSlides; // Angle between each slide
     const activeAngle = (2 * Math.PI * activeIndex.value) / totalSlides; // Angle of active slide
     const currentAngle = (2 * Math.PI * index) / totalSlides; // Angle of current slide
-
+    
     // Calculate angle difference from active slide
     let angleDiff = currentAngle - activeAngle;
-
+    
     // Normalize angle to be between -π and π
     while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
     while (angleDiff <= -Math.PI) angleDiff += 2 * Math.PI;
-
+    
     // Calculate position on the carousel
     const radius = 400; // Radius of the carousel (in pixels)
     const x = Math.sin(angleDiff) * radius;
@@ -182,7 +182,7 @@ const getSlideStyle = (index) => {
     const scale = 1 - (Math.abs(angleDiff) / Math.PI) * 0.5; // Scale based on angle
     const opacity = 1 - (Math.abs(angleDiff) / Math.PI) * 0.7; // Opacity based on angle
     const zIndex = Math.round(100 - Math.abs(angleDiff) * 10); // Z-index based on angle
-
+    
     return {
         transform: `translateX(${x}px) translateZ(${z}px) scale(${scale})`,
         zIndex: zIndex,

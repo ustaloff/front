@@ -26,8 +26,7 @@
                 <div
                     v-for="(slide, index) in slidesData"
                     :key="index"
-                    :class="['slide', getSlideClass(index)]"
-                    :style="getSlideStyle(index)"
+                    :class="['slide', positions[index]]"
                 >
                     <div class="ring-container">
                         <img :src="slide.ringImage" :alt="slide.title" class="ring-image" draggable="false"/>
@@ -85,116 +84,27 @@ const slidesData = ref([
         game: 'Gates of Olympus',
         gameIcon: '/sugar-rush-icon.png', // Placeholder
         ringImage: '/ring-3.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Ruby Welcome Bonus',
-        spins: '300',
-        game: 'Gates of Olympus',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Sapphire Welcome Bonus',
-        spins: '150',
-        game: 'Sweet Bonanza',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Emerald Welcome Bonus',
-        spins: '200',
-        game: 'Sugar Rush',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-1.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Sapphire Welcome Bonus',
-        spins: '150',
-        game: 'Sweet Bonanza',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Ruby Welcome Bonus',
-        spins: '300',
-        game: 'Gates of Olympus',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Ruby Welcome Bonus',
-        spins: '300',
-        game: 'Gates of Olympus',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Sapphire Welcome Bonus',
-        spins: '150',
-        game: 'Sweet Bonanza',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
-    },
+    }
 ]);
 
-// Reactive variable to hold the index of the currently active slide
-const activeIndex = ref(0);
+// Reactive array to hold the current positions of the slides
+const positions = ref(['pos-1', 'pos-2', 'pos-3']); // pos-1: left, pos-2: center, pos-3: right
 
-// Computed property to get the data of the currently active slide
+// Computed property to get the data of the currently active (center) slide
 const currentSlideData = computed(() => {
-    return slidesData.value[activeIndex.value];
+    const centerIndex = positions.value.indexOf('pos-2');
+    return slidesData.value[centerIndex];
 });
 
-// Navigation functions for circular navigation
+// Navigation functions
 const next = () => {
-    activeIndex.value = (activeIndex.value + 1) % slidesData.value.length;
+    const lastPos = positions.value.pop();
+    positions.value.unshift(lastPos);
 };
 
 const prev = () => {
-    activeIndex.value = (activeIndex.value - 1 + slidesData.value.length) % slidesData.value.length;
-};
-
-// Function to determine the style for each slide based on its position in the 3D carousel
-const getSlideStyle = (index) => {
-    const totalSlides = slidesData.value.length;
-    const angleStep = (2 * Math.PI) / totalSlides; // Angle between each slide
-    const activeAngle = (2 * Math.PI * activeIndex.value) / totalSlides; // Angle of active slide
-    const currentAngle = (2 * Math.PI * index) / totalSlides; // Angle of current slide
-
-    // Calculate angle difference from active slide
-    let angleDiff = currentAngle - activeAngle;
-
-    // Normalize angle to be between -π and π
-    while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
-    while (angleDiff <= -Math.PI) angleDiff += 2 * Math.PI;
-
-    // Calculate position on the carousel
-    const radius = 400; // Radius of the carousel (in pixels)
-    const x = Math.sin(angleDiff) * radius;
-    const z = (Math.cos(angleDiff) * radius) / 2; // Reduce Z effect for better visual
-    const scale = 1 - (Math.abs(angleDiff) / Math.PI) * 0.5; // Scale based on angle
-    const opacity = 1 - (Math.abs(angleDiff) / Math.PI) * 0.7; // Opacity based on angle
-    const zIndex = Math.round(100 - Math.abs(angleDiff) * 10); // Z-index based on angle
-
-    return {
-        transform: `translateX(${x}px) translateZ(${z}px) scale(${scale})`,
-        zIndex: zIndex,
-        filter: `blur(${(1 - opacity) * 2}px)`,
-        opacity: opacity,
-        visibility: 'visible'
-    };
-};
-
-// Function to determine the class for each slide (simplified for 3D carousel)
-const getSlideClass = (index) => {
-    return 'slide-3d';
+    const firstPos = positions.value.shift();
+    positions.value.push(firstPos);
 };
 
 // Swipe gesture implementation using manual event listeners for proper swipe detection
@@ -266,9 +176,6 @@ const isDragging = isSwiping;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    /* Enable 3D perspective for the carousel */
-    perspective: 1000px;
-    transform-style: preserve-3d;
 }
 
 .slides-wrapper.is-dragging {
@@ -282,39 +189,31 @@ const isDragging = isSwiping;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.7s ease, filter 0.7s ease, opacity 0.7s ease; /* Removed z-index transition as it's controlled by dynamic styles */
+    transition: transform 0.7s ease, filter 0.7s ease, opacity 0.7s ease, z-index 0.7s ease;
     transform-origin: center center;
     pointer-events: none; /* Allow swipe events to pass through to the wrapper */
 }
 
-/* 3D Carousel styles */
-.slide-3d {
-    position: absolute;
-    width: 250px;
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.7s ease, filter 0.7s ease, opacity 0.7s ease, z-index 0.7s ease;
-    transform-origin: center center;
-    pointer-events: none;
-    backface-visibility: hidden; /* Hide back of element during 3D transformation */
+/* Position classes */
+.pos-1 { /* Left slide */
+    transform: translateX(-100%) scale(0.7);
+    filter: blur(3px);
+    opacity: 0.7;
+    z-index: 1;
 }
 
-.slides-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    /* Enable 3D perspective */
-    perspective: 1000px;
+.pos-2 { /* Center (active) slide */
+    transform: translateX(0%) scale(1.1);
+    filter: blur(0);
+    opacity: 1;
+    z-index: 3;
+}
+
+.pos-3 { /* Right slide */
+    transform: translateX(100%) scale(0.7);
+    filter: blur(3px);
+    opacity: 0.7;
+    z-index: 1;
 }
 
 .ring-container {

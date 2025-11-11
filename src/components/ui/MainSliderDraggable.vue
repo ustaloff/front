@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useDraggable } from '@vueuse/core';
 
 // Data for the slides
@@ -111,19 +111,19 @@ const prev = () => {
 const sliderWrapperRef = ref(null);
 
 const { x, isDragging } = useDraggable(sliderWrapperRef, {
-  // We prevent the default behavior of applying a transform style
-  // by not binding the `style` to the element.
-  // We only use the `x` value to detect swipe distance.
-  onEnd: () => {
-    const dragDistance = x.value;
-    const SWIPE_THRESHOLD = 50;
+// We prevent the default behavior of applying a transform style
+// by not binding the `style` to the element.
+// We only use the `x` value to detect swipe distance.
+    onEnd: () => {
+        const dragDistance = x.value;
+        const SWIPE_THRESHOLD = 50;
 
-    if (dragDistance < -SWIPE_THRESHOLD) { // Dragged left
-      next();
-    } else if (dragDistance > SWIPE_THRESHOLD) { // Dragged right
-      prev();
-    }
-  },
+        if (dragDistance < -SWIPE_THRESHOLD) { // Dragged left
+            next();
+        } else if (dragDistance > SWIPE_THRESHOLD) { // Dragged right
+            prev();
+        }
+    },
 });
 </script>
 

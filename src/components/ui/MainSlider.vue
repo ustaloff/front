@@ -21,7 +21,7 @@
             <div
                 class="slides-wrapper"
                 ref="sliderWrapperRef"
-                :class="{ 'is-dragging': carousel.isSwiping }"
+                :class="{ 'is-dragging': carousel.isSwiping?.value }"
             >
                 <div
                     v-for="(slide, index) in slidesData"
@@ -136,7 +136,7 @@ const carousel = use3DCarousel({
 
 // Computed property to get the data of the currently active slide
 const currentSlideData = computed(() => {
-    return slidesData.value[carousel.baseActiveIndex.value];
+    return slidesData.value[carousel.activeIndex.value];
 });
 </script>
 
@@ -216,7 +216,7 @@ const currentSlideData = computed(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease, opacity 0.6s ease, z-index 0.6s ease;
+    transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.35, 1), filter 0.4s ease, opacity 0.4s ease;
     transform-origin: center center;
     transform-style: preserve-3d;
     pointer-events: none;

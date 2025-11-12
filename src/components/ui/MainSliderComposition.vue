@@ -216,7 +216,7 @@ const currentSlideData = computed(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease, opacity 0.6s ease, z-index 0.6s ease;
+    transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.35, 1), filter 0.4s ease, opacity 0.4s ease;
     transform-origin: center center;
     transform-style: preserve-3d;
     pointer-events: none;

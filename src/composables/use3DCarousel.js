@@ -1,123 +1,107 @@
-import { ref, computed } from 'vue';
-import { useSwipe } from '@vueuse/core';
+import { ref } from 'vue';
+import { useSwipe, useDraggable } from '@vueuse/core';
 
+/**
+ * Композабл для 3D карусели
+ * @param {Object} options - Параметры карусели
+ * @returns {Object} - Объект с методами и реактивными данными карусели
+ */
 export const use3DCarousel = (options = {}) => {
-  // Default configuration
+  // Конфигурация по умолчанию
   const defaults = {
-    radius: 300,
-    maxVisibleAngle: Math.PI / 1.8,
-    maxScale: 1.0,
-    minScale: 0.4,
-    maxOpacity: 1.0,
-    minOpacity: 0.2,
-    maxRotation: 30,
-    swipeThreshold: 100,
-    perspective: 1000,
-    animationDuration: 600,
-    animationEasing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+    radius: 300,           // Радиус 3D карусели
+    maxVisibleAngle: Math.PI / 1.8,  // Максимальный угол видимости
+    maxScale: 1.0,         // Максимальный масштаб активного элемента
+    minScale: 0.4,         // Минимальный масштаб боковых элементов
+    maxOpacity: 1.0,       // Максимальная прозрачность активного элемента
+    minOpacity: 0.2,       // Минимальная прозрачность боковых элементов
+    maxRotation: 30,       // Максимальный поворот в градусах
+    swipeThreshold: 100    // Порог свайпа для смены слайда
   };
 
-  // Merge options with defaults
+  // Объединяем переданные опции с настройками по умолчанию
   const config = { ...defaults, ...options };
 
-  // Reactive variables
-  const baseActiveIndex = ref(0);
-  // Use the provided ref from options, or create a new one
+  // Реактивное значение для индекса активного слайда
+  const activeIndex = ref(0);
+
+  // Ссылка на элемент карусели
   const sliderWrapperRef = options.sliderWrapperRef || ref(null);
 
-  // Swipe detection
+  // Обработка свайпа (работает как на тач-устройствах, так и с мышью)
   const { isSwiping, lengthX } = useSwipe(sliderWrapperRef, {
-    onSwipe: () => {
-      // Update swipe offset during swipe for continuous rotation
-    },
     onSwipeEnd: () => {
+      // Проверяем, есть ли данные слайдов
       if (!options.slidesData?.value) return;
-      
-      // Calculate how many slides to move based on swipe distance
-      const slidesToMove = Math.round(lengthX.value / config.swipeThreshold);
 
-      if (Math.abs(slidesToMove) > 0) {
-        // Update baseActiveIndex by the number of slides moved
-        let newIndex = (baseActiveIndex.value + slidesToMove) % options.slidesData.value.length;
-        if (newIndex < 0) {
-          newIndex += options.slidesData.value.length;
-        }
-        baseActiveIndex.value = newIndex;
+      console.log('isSwiping', isSwiping);
 
-        if (slidesToMove < 0) { // Swiped left (finger moves left on screen)
-          console.log('next', lengthX.value, slidesToMove);
-        } else { // Swiped right (finger moves right on screen)
-          console.log('prev', lengthX.value, slidesToMove);
+      // Если пользователь свайпнул дальше порога, переключаем слайд
+      if (Math.abs(lengthX.value) > config.swipeThreshold) {
+        if (lengthX.value < 0) {
+          // Свайп влево - следующий слайд
+          console.log('next (swipe left)', lengthX.value);
+          next();
+        } else {
+          // Свайп вправо - предыдущий слайд
+          console.log('prev (swipe right)', lengthX.value);
+          prev();
         }
       }
     }
   });
 
-  // Computed properties
-  const swipeOffset = computed(() => {
-    return lengthX.value ? lengthX.value / config.swipeThreshold : 0;
-  });
-
-  const activeIndex = computed(() => {
-    if (!options.slidesData?.value || options.slidesData.value.length === 0) return 0;
-    
-    const rawIndex = baseActiveIndex.value + swipeOffset.value;
-    const totalSlides = options.slidesData.value.length;
-    // Normalize the index to be within the valid range [0, totalSlides-1]
-    let normalizedIndex = rawIndex % totalSlides;
-    if (normalizedIndex < 0) {
-      normalizedIndex += totalSlides;
-    }
-    return Math.round(normalizedIndex);
-  });
-
-  // Navigation functions
+  // Навигация к следующему слайду
   const next = () => {
     if (options.slidesData?.value) {
-      baseActiveIndex.value = (baseActiveIndex.value + 1) % options.slidesData.value.length;
+      // Переход к следующему слайду с зацикливанием
+      activeIndex.value = (activeIndex.value + 1) % options.slidesData.value.length;
     }
   };
 
+  // Навигация к предыдущему слайду
   const prev = () => {
     if (options.slidesData?.value) {
-      baseActiveIndex.value = (baseActiveIndex.value - 1 + options.slidesData.value.length) % options.slidesData.value.length;
+      // Переход к предыдущему слайду с зацикливанием
+      activeIndex.value = (activeIndex.value - 1 + options.slidesData.value.length) % options.slidesData.value.length;
     }
   };
 
-  // Function to calculate slide styles for 3D effect
+  // Вычисление стилей для 3D эффекта слайдов
   const getSlideStyle = (index) => {
     if (!options.slidesData?.value || options.slidesData.value.length === 0) {
       return {};
     }
-    
+
     const totalSlides = options.slidesData.value.length;
-    const angleStep = (2 * Math.PI) / totalSlides;
+    // Угол активного слайда
     const activeAngle = (2 * Math.PI * activeIndex.value) / totalSlides;
+    // Угол текущего слайда
     const currentAngle = (2 * Math.PI * index) / totalSlides;
 
-    // Calculate angle difference from active slide (with swipe offset)
+    // Разница углов между текущим и активным слайдом
     let angleDiff = currentAngle - activeAngle;
 
-    // Normalize angle to be between -π and π
+    // Нормализация угла в диапазоне [-π, π]
     while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
     while (angleDiff <= -Math.PI) angleDiff += 2 * Math.PI;
 
-    // Calculate position
+    // Вычисление позиции слайда
     const x = Math.sin(angleDiff) * config.radius;
     const z = (1 - Math.abs(angleDiff) / config.maxVisibleAngle) * (config.radius / 3);
 
-    // Calculate scale based on distance from center
+    // Вычисление масштаба на основе расстояния от центра
     let scale = config.maxScale - (Math.abs(angleDiff) / config.maxVisibleAngle) * (config.maxScale - config.minScale);
-    scale = Math.max(scale, config.minScale); // Ensure minimum scale
+    scale = Math.max(scale, config.minScale); // Минимальный масштаб
 
-    // Calculate opacity based on distance
+    // Вычисление прозрачности на основе расстояния от центра
     let opacity = config.maxOpacity - (Math.abs(angleDiff) / config.maxVisibleAngle) * (config.maxOpacity - config.minOpacity);
-    opacity = Math.max(opacity, config.minOpacity); // Ensure minimum opacity
+    opacity = Math.max(opacity, config.minOpacity); // Минимальная прозрачность
 
-    // Calculate rotation for 3D effect
+    // Вычисление поворота для 3D эффекта
     const rotationY = (angleDiff / config.maxVisibleAngle) * config.maxRotation;
 
-    // Calculate z-index based on position
+    // Вычисление z-index на основе позиции
     const zIndex = Math.round(50 - Math.abs(angleDiff) * 8);
 
     return {
@@ -129,28 +113,24 @@ export const use3DCarousel = (options = {}) => {
     };
   };
 
-  // Function to determine slide class
+  // Получение CSS класса для слайда
   const getSlideClass = (index) => {
     return 'slide-3d';
   };
 
   return {
-    // Reactive references
-    baseActiveIndex,
-    activeIndex,
-    sliderWrapperRef,
-    isSwiping,
-    
-    // Computed properties
-    swipeOffset,
-    
-    // Functions
-    next,
-    prev,
-    getSlideStyle,
-    getSlideClass,
-    
-    // Configuration
-    config
+    // Реактивные значения
+    activeIndex,      // Индекс активного слайда
+    sliderWrapperRef, // Ссылка на контейнер карусели
+    isSwiping,        // Состояние свайпа
+
+    // Методы
+    next,             // Переход к следующему слайду
+    prev,             // Переход к предыдущему слайду
+    getSlideStyle,    // Получение стилей для 3D эффекта
+    getSlideClass,    // Получение CSS класса слайда
+
+    // Конфигурация
+    config            // Конфигурация карусели
   };
 };

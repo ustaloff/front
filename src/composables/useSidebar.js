@@ -3,10 +3,10 @@
  * Поддерживает адаптивное поведение для мобильных и десктопных устройств
  * Автоматически сохраняет состояние expansion в localStorage
  */
-import { reactive, computed, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { useDeviceStore } from '@/stores/device'
 
-// Константы
+/* Константы */
 export const SIDEBAR = 'SIDEBAR'
 const STORAGE_KEY = 'sidebar-expanded'
 
@@ -36,7 +36,7 @@ const saveExpandedState = (isExpanded) => {
     }
 }
 
-// Кэш для CSS переменных ширины сайдбара (оптимизация)
+/* Кэш для CSS переменных ширины сайдбара (оптимизация) */
 let sidebarWidthCache = null
 
 /**
@@ -77,7 +77,7 @@ const updateBodySidebarState = (shouldOffset, width) => {
     }
 }
 
-// Глобальное реактивное состояние сайдбара (singleton)
+/* Глобальное реактивное состояние сайдбара (singleton) */
 const sidebarState = reactive({
     isOpen: false,                    // Открыт/закрыт (для мобильных)
     isExpanded: loadExpandedState(),  // Развернут/свернут (для десктопа)
@@ -93,7 +93,7 @@ const sidebarState = reactive({
 export function useSidebar(breakpoint) {
     const deviceStore = useDeviceStore()
 
-    // Определяем логику isMobile в зависимости от переданного параметра
+    /* Определяем логику isMobile в зависимости от переданного параметра */
     const isMobile = breakpoint
         ? computed(() => deviceStore.isBreakpointDown(breakpoint))
         : computed(() => deviceStore.isMobile)
@@ -107,17 +107,17 @@ export function useSidebar(breakpoint) {
     const initializeSidebar = () => {
         if (sidebarState.initialized) return
 
-        // Проверяем текущий размер экрана
+        /* Проверяем текущий размер экрана */
         deviceStore.checkDevice()
         sidebarState.isMobile = isMobile.value
 
         if (isMobile.value) {
-            // Мобильное устройство: закрыт и свернут
+            /* Мобильное устройство: закрыт и свернут */
             sidebarState.isOpen = false
             sidebarState.isExpanded = false
             updateBodySidebarState(false, '0px')
         } else {
-            // Десктопное устройство: открыт, состояние expansion из localStorage
+            /* Десктопное устройство: открыт, состояние expansion из localStorage */
             sidebarState.isOpen = true
             const width = getCurrentSidebarWidth(sidebarState.isExpanded)
             updateBodySidebarState(true, width)
@@ -128,13 +128,13 @@ export function useSidebar(breakpoint) {
 
     initializeSidebar()
 
-    // Watcher: отслеживает изменения expansion состояния
+    /* Watcher: отслеживает изменения expansion состояния */
     watch(() => sidebarState.isExpanded, (newExpanded) => {
         if (!isMobile.value) {
-            // Сохраняем состояние только на десктопе
+            /* Сохраняем состояние только на десктопе */
             saveExpandedState(newExpanded)
 
-            // Обновляем ширину offset только если sidebar открыт
+            /* Обновляем ширину offset только если sidebar открыт */
             if (sidebarState.isOpen) {
                 const width = getCurrentSidebarWidth(newExpanded)
                 updateBodySidebarState(true, width)
@@ -142,29 +142,29 @@ export function useSidebar(breakpoint) {
         }
     })
 
-    // Watcher: отслеживает открытие/закрытие сайдбара
+    /* Watcher: отслеживает открытие/закрытие сайдбара */
     watch(() => sidebarState.isOpen, (isOpen) => {
         if (isOpen) {
             // При открытии сразу применяем offset с текущей шириной
             const width = getCurrentSidebarWidth(sidebarState.isExpanded)
             updateBodySidebarState(true, width)
         }
-        // При закрытии НЕ убираем offset - это делает handleBeforeHide для плавной анимации
+        /* При закрытии НЕ убираем offset - это делает handleBeforeHide для плавной анимации */
     })
 
-    // Watcher: отслеживает переключение между мобильным и десктопным режимами
+    /* Watcher: отслеживает переключение между мобильным и десктопным режимами */
     watch(() => isMobile.value, (newIsMobile, oldIsMobile) => {
         if (newIsMobile !== oldIsMobile) {
-            // Обновляем кэш типа устройства
+            /* Обновляем кэш типа устройства */
             sidebarState.isMobile = newIsMobile
 
             if (newIsMobile) {
-                // Переход на мобильное: закрываем и сворачиваем
+                /* Переход на мобильное: закрываем и сворачиваем */
                 sidebarState.isOpen = false
                 sidebarState.isExpanded = false
                 updateBodySidebarState(false, '0px')
             } else {
-                // Переход на десктоп: открываем и восстанавливаем expansion из localStorage
+                /* Переход на десктоп: открываем и восстанавливаем expansion из localStorage */
                 sidebarState.isOpen = true
                 sidebarState.isExpanded = loadExpandedState()
                 const width = getCurrentSidebarWidth(sidebarState.isExpanded)
@@ -173,7 +173,7 @@ export function useSidebar(breakpoint) {
         }
     }, { immediate: false })
 
-    // Computed свойства для реактивного доступа к состоянию
+    /* Computed свойства для реактивного доступа к состоянию */
     const isOpen = computed(() => sidebarState.isOpen)
     const isExpanded = computed(() => sidebarState.isExpanded)
 
@@ -202,7 +202,7 @@ export function useSidebar(breakpoint) {
         }
     }
 
-    // Возвращаем API composable
+    /* Возвращаем API composable */
     return {
         isOpen,           // Computed: состояние открыт/закрыт
         isExpanded,       // Computed: состояние развернут/свернут

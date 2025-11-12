@@ -79,13 +79,13 @@ const slidesData = ref([
 // Initialize the 3D carousel composable with options
 const carousel = use3DCarousel({
     slidesData: slidesData,
-    radius: 400,
-    baseSlideSize: 700,  // Базовый размер слайда
+    radiusPercentage: 40,  // Радиус в процентах от ширины контейнера
+    slideSizePercentage: 40, // Размер слайда в процентах от ширины контейнера
     maxVisibleAngle: Math.PI / 1.8,
     minScale: 0.5,
     minOpacity: 0.5,
     maxRotation: 30,
-    swipeThreshold: 100
+    swipeThresholdPercentage: 10  // Порог свайпа в процентах от ширины контейнера
 });
 
 // Computed property to get the data of the currently active slide

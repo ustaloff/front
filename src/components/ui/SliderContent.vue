@@ -21,10 +21,9 @@
 /**
  * Компонент для отображения содержимого слайдера (левая панель)
  */
-import { defineProps } from 'vue';
 
 // Определяем пропс для текущего слайда
-const props = defineProps({
+defineProps({
     currentSlideData: {
         type: Object,
         required: true

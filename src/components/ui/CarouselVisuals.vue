@@ -42,10 +42,9 @@
  * Компонент для визуального отображения 3D карусели
  * Использует переданный carousel composable для управления состоянием карусели
  */
-import { defineProps } from 'vue';
 
 // Определяем пропсы
-const props = defineProps({
+defineProps({
     slidesData: {
         type: Array,
         required: true

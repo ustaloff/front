@@ -1,3 +1,12 @@
+<template>
+    <Header/>
+    <Sidebar/>
+    <Main>
+        <RouterView/>
+    </Main>
+    <Footer/>
+</template>
+
 <script setup>
 import { RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -25,12 +34,3 @@ onUnmounted(() => {
     deviceStore.cleanupListeners()
 })
 </script>
-
-<template>
-    <Header/>
-    <Sidebar/>
-    <Main>
-        <RouterView/>
-    </Main>
-    <Footer/>
-</template>

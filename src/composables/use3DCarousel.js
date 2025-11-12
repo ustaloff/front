@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useElementSize, useSwipe } from '@vueuse/core';
 
 /**
@@ -9,16 +9,15 @@ import { useElementSize, useSwipe } from '@vueuse/core';
 export const use3DCarousel = (options = {}) => {
     // Конфигурация по умолчанию
     const defaults = {
-        radius: 300,           // Радиус 3D карусели при базовой ширине
-        baseSlideSize: 250,    // Базовый размер слайда (ширина и высота)
+        radiusPercentage: 30,  // Радиус 3D карусели в процентах от ширины контейнера
+        slideSizePercentage: 25, // Размер слайда в процентах от ширины контейнера
         maxVisibleAngle: Math.PI / 1.8,  // Максимальный угол видимости
         maxScale: 1.0,         // Максимальный масштаб активного элемента
         minScale: 0.4,         // Минимальный масштаб боковых элементов
         maxOpacity: 1.0,       // Максимальная прозрачность активного элемента
         minOpacity: 0.2,       // Минимальная прозрачность боковых элементов
         maxRotation: 30,       // Максимальный поворот в градусах
-        swipeThreshold: 100,   // Порог свайпа для смены слайда
-        baseWidth: 1000        // Базовая ширина для расчёта масштаба
+        swipeThresholdPercentage: 10  // Порог свайпа в процентах от ширины контейнера
     };
 
     // Объединяем переданные опции с настройками по умолчанию
@@ -33,24 +32,30 @@ export const use3DCarousel = (options = {}) => {
     // Определяем размеры контейнера
     const { width: containerWidth } = useElementSize(sliderWrapperRef);
 
-    // Вычисляем коэффициент масштабирования на основе ширины контейнера
-    const scaleFactor = ref(1);
-    
-    // Обновляем коэффициент масштабирования при изменении ширины контейнера
-    watch(containerWidth, (newWidth) => {
-        if (newWidth > 0) {
-            scaleFactor.value = newWidth / config.baseWidth;
+    // Вычисляем коэффициент масштабирования для вычислений эффектов
+    const scaleFactor = computed(() => {
+        if (containerWidth.value > 0) {
+            // Используем отношение ширины контейнера к 100px для вычисления коэффициента
+            // Это даст нам правильный масштаб для эффектов, таких как размытие
+            return containerWidth.value / 100;
         }
+        return 1; // Значение по умолчанию
     });
-    
-    // Вычисляем динамический радиус на основе ширины контейнера
+
+    // Вычисляем динамический радиус на основе ширины контейнера и процентного соотношения
     const dynamicRadius = computed(() => {
-        return config.radius * scaleFactor.value;
+        if (containerWidth.value > 0) {
+            return (containerWidth.value * config.radiusPercentage) / 100;
+        }
+        return (config.radiusPercentage * 10); // Резервное значение
     });
 
     // Вычисляем динамический размер слайда на основе ширины контейнера
     const dynamicSlideSize = computed(() => {
-        return config.baseSlideSize * scaleFactor.value;
+        if (containerWidth.value > 0) {
+            return (containerWidth.value * config.slideSizePercentage) / 100;
+        }
+        return (config.slideSizePercentage * 10); // Резервное значение
     });
 
     // Обработка свайпа (работает как на тач-устройствах, так и с мышью)
@@ -59,11 +64,11 @@ export const use3DCarousel = (options = {}) => {
             // Проверяем, есть ли данные слайдов
             if (!options.slidesData?.value) return;
 
-            // Учитываем масштабирование порога свайпа
-            const scaledSwipeThreshold = config.swipeThreshold * scaleFactor.value;
-            
+            // Вычисляем порог свайпа как процент от ширины контейнера
+            const swipeThreshold = (containerWidth.value * config.swipeThresholdPercentage) / 100;
+
             // Если пользователь свайпнул дальше порога, переключаем слайд
-            if (Math.abs(lengthX.value) > scaledSwipeThreshold) {
+            if (Math.abs(lengthX.value) > swipeThreshold) {
                 if (lengthX.value < 0) {
                     // Свайп влево - следующий слайд
                     console.log('next (swipe left)', lengthX.value);
@@ -119,16 +124,20 @@ export const use3DCarousel = (options = {}) => {
         // Вычисление масштаба на основе расстояния от центра
         let scale = config.maxScale - (Math.abs(angleDiff) / config.maxVisibleAngle) * (config.maxScale - config.minScale);
         scale = Math.max(scale, config.minScale); // Минимальный масштаб
-        
-        // Применяем масштабирование к размеру слайда
-        scale = scale * scaleFactor.value;
 
         // Вычисление прозрачности на основе расстояния от центра
         let opacity = config.maxOpacity - (Math.abs(angleDiff) / config.maxVisibleAngle) * (config.maxOpacity - config.minOpacity);
         opacity = Math.max(opacity, config.minOpacity); // Минимальная прозрачность
 
         // Вычисление поворота для 3D эффекта
-        const rotationY = (angleDiff / config.maxVisibleAngle) * config.maxRotation;
+        // Используем абсолютное значение угла для определения направления поворота
+        const rotationY = Math.max(
+            -config.maxRotation,
+            Math.min(
+                config.maxRotation,
+                (angleDiff / config.maxVisibleAngle) * config.maxRotation
+            )
+        );
 
         // Вычисление z-index на основе позиции
         const zIndex = Math.round(50 - Math.abs(angleDiff) * 8);

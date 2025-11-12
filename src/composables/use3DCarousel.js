@@ -1,5 +1,5 @@
-import { ref, watch, computed } from 'vue';
-import { useSwipe, useElementSize } from '@vueuse/core';
+import { computed, ref, watch } from 'vue';
+import { useElementSize, useSwipe } from '@vueuse/core';
 
 /**
  * Композабл для 3D карусели
@@ -10,6 +10,7 @@ export const use3DCarousel = (options = {}) => {
     // Конфигурация по умолчанию
     const defaults = {
         radius: 300,           // Радиус 3D карусели при базовой ширине
+        baseSlideSize: 250,    // Базовый размер слайда (ширина и высота)
         maxVisibleAngle: Math.PI / 1.8,  // Максимальный угол видимости
         maxScale: 1.0,         // Максимальный масштаб активного элемента
         minScale: 0.4,         // Минимальный масштаб боковых элементов
@@ -45,6 +46,11 @@ export const use3DCarousel = (options = {}) => {
     // Вычисляем динамический радиус на основе ширины контейнера
     const dynamicRadius = computed(() => {
         return config.radius * scaleFactor.value;
+    });
+
+    // Вычисляем динамический размер слайда на основе ширины контейнера
+    const dynamicSlideSize = computed(() => {
+        return config.baseSlideSize * scaleFactor.value;
     });
 
     // Обработка свайпа (работает как на тач-устройствах, так и с мышью)
@@ -132,7 +138,10 @@ export const use3DCarousel = (options = {}) => {
             zIndex: zIndex,
             filter: `blur(${(1 - opacity) * 0.5 * scaleFactor.value}px)`,
             opacity: opacity,
-            visibility: 'visible'
+            visibility: 'visible',
+            // Устанавливаем размер слайда через стили
+            width: `${dynamicSlideSize.value}px`,
+            height: `${dynamicSlideSize.value}px`
         };
     };
 
@@ -148,6 +157,7 @@ export const use3DCarousel = (options = {}) => {
         isSwiping,        // Состояние свайпа
         scaleFactor,      // Коэффициент масштабирования
         dynamicRadius,    // Динамический радиус карусели
+        dynamicSlideSize, // Динамический размер слайда
 
         // Методы
         next,             // Переход к следующему слайду

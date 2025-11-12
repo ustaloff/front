@@ -12,6 +12,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { use3DCarousel } from '@/composables/use3DCarousel';
+
 import CarouselVisuals from './CarouselVisuals.vue';
 import SliderContent from './SliderContent.vue';
 
@@ -79,9 +80,10 @@ const slidesData = ref([
 const carousel = use3DCarousel({
     slidesData: slidesData,
     radius: 400,
+    baseSlideSize: 700,  // Базовый размер слайда
     maxVisibleAngle: Math.PI / 1.8,
     minScale: 0.5,
-    minOpacity: 0.9,
+    minOpacity: 0.5,
     maxRotation: 30,
     swipeThreshold: 100
 });

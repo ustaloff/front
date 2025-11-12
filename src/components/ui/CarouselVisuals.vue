@@ -93,7 +93,7 @@ const props = defineProps({
 
 .slide {
     position: absolute;
-    width: 250px; /* Base size for slides */
+    width: 250px; /* Базовый размер слайда - будет перезаписан динамически */
     height: 250px;
     display: flex;
     align-items: center;
@@ -108,7 +108,7 @@ const props = defineProps({
 /* 3D Carousel styles */
 .slide-3d {
     position: absolute;
-    width: 250px;
+    width: 250px; /* Базовый размер слайда - будет перезаписан динамически */
     height: 250px;
     display: flex;
     align-items: center;

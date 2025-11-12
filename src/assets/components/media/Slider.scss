@@ -1,0 +1,33 @@
+.custom-slider {
+  display: flex;
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  height: 400px;
+  min-height: 300px; /* Минимальная высота для маленьких экранов */
+  margin: 2rem auto;
+  background-image: url('/slider-bg.png'); /* Using provided background image */
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Адаптивные стили для планшетов */
+@media (max-width: 768px) {
+  .custom-slider {
+    height: 300px;
+    margin: 1rem auto;
+    border-radius: 12px;
+  }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 480px) {
+  .custom-slider {
+    flex-direction: column; /* На мобильных устройствах меняем расположение */
+    height: auto;
+    min-height: 400px;
+  }
+}

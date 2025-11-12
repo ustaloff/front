@@ -193,4 +193,28 @@ const props = defineProps({
 .next-button {
     right: 0; /* Adjust as needed */
 }
+
+/* Адаптивные стили для планшетов */
+@media (max-width: 768px) {
+    .nav-button {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 480px) {
+    .nav-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .prev-button {
+        left: 10px;
+    }
+    
+    .next-button {
+        right: 10px;
+    }
+}
 </style>

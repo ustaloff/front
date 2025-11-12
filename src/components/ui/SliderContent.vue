@@ -102,4 +102,58 @@ const props = defineProps({
 .claim-button:hover {
     transform: scale(1.05);
 }
+
+/* Адаптивные стили для планшетов */
+@media (max-width: 768px) {
+    .slider-content {
+        padding: 1.5rem 2rem;
+        flex-basis: 45%;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .bonus-spins {
+        font-size: 2.5rem;
+    }
+    
+    .claim-button {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 480px) {
+    .slider-content {
+        flex-basis: 100%;
+        padding: 1.5rem 1.5rem 3rem;
+    }
+    
+    .small-title {
+        font-size: 0.8rem;
+    }
+    
+    .main-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .bonus-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .bonus-spins {
+        font-size: 2rem;
+    }
+    
+    .claim-button {
+        padding: 0.8rem 2rem;
+        width: 100%;
+    }
+}
 </style>

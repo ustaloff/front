@@ -78,7 +78,7 @@ const slidesData = ref([
 // Initialize the 3D carousel composable with options
 const carousel = use3DCarousel({
     slidesData: slidesData,
-    radius: 200,
+    radius: 400,
     maxVisibleAngle: Math.PI / 1.8,
     minScale: 0.5,
     minOpacity: 0.9,
@@ -99,6 +99,7 @@ const currentSlideData = computed(() => {
     width: 100%;
     max-width: 1000px;
     height: 400px;
+    min-height: 300px; /* Минимальная высота для маленьких экранов */
     margin: 2rem auto;
     background-image: url('/slider-bg.png'); /* Using provided background image */
     background-size: cover;
@@ -106,5 +107,23 @@ const currentSlideData = computed(() => {
     border-radius: 16px;
     overflow: hidden;
     color: #fff;
+}
+
+/* Адаптивные стили для планшетов */
+@media (max-width: 768px) {
+    .custom-slider {
+        height: 300px;
+        margin: 1rem auto;
+        border-radius: 12px;
+    }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 480px) {
+    .custom-slider {
+        flex-direction: column; /* На мобильных устройствах меняем расположение */
+        height: auto;
+        min-height: 400px;
+    }
 }
 </style>

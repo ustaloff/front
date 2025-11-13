@@ -43,7 +43,6 @@
  * Использует переданный carousel composable для управления состоянием карусели
  */
 
-// Определяем пропсы
 defineProps({
     slidesData: {
         type: Array,
@@ -54,7 +53,7 @@ defineProps({
         required: true
     },
     sliderWrapperRef: {
-        type: Object, // Это будет Ref
+        type: Object,
         required: true
     }
 });

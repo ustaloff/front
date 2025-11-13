@@ -24,7 +24,7 @@ const slidesData = ref([
         spins: '200',
         game: 'Sugar Rush',
         gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-1.png' // Using provided image
+        ringImage: '/ben_0.webp' // Using provided image
     },
     {
         smallTitle: 'SELECT YOUR BONUS',
@@ -32,7 +32,7 @@ const slidesData = ref([
         spins: '150',
         game: 'Sweet Bonanza',
         gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
+        ringImage: '/indy_0.webp' // Using provided image
     },
     {
         smallTitle: 'SELECT YOUR BONUS',
@@ -40,7 +40,7 @@ const slidesData = ref([
         spins: '300',
         game: 'Gates of Olympus',
         gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
+        ringImage: '/lara_0.webp' // Using provided image
     },
     {
         smallTitle: 'SELECT YOUR BONUS',
@@ -48,7 +48,7 @@ const slidesData = ref([
         spins: '200',
         game: 'Sugar Rush',
         gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-1.png' // Using provided image
+        ringImage: '/ben_0.webp' // Using provided image
     },
     {
         smallTitle: 'SELECT YOUR BONUS',
@@ -56,36 +56,19 @@ const slidesData = ref([
         spins: '150',
         game: 'Sweet Bonanza',
         gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-2.png' // Using provided image
+        ringImage: '/indy_0.webp' // Using provided image
     },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Ruby Welcome Bonus',
-        spins: '300',
-        game: 'Gates of Olympus',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
-    },
-    {
-        smallTitle: 'SELECT YOUR BONUS',
-        title: 'Ruby Welcome Bonus',
-        spins: '300',
-        game: 'Gates of Olympus',
-        gameIcon: '/sugar-rush-icon.png', // Placeholder
-        ringImage: '/ring-3.png' // Using provided image
-    },
+
 ]);
 
 // Initialize the 3D carousel composable with options
 const carousel = use3DCarousel({
     slidesData: slidesData,
-    radiusPercentage: 40,  // Радиус в процентах от ширины контейнера
-    slideSizePercentage: 40, // Размер слайда в процентах от ширины контейнера
-    maxVisibleAngle: Math.PI / 1.8,
-    minScale: 0.5,
-    minOpacity: 0.5,
-    maxRotation: 30,
-    swipeThresholdPercentage: 10  // Порог свайпа в процентах от ширины контейнера
+    radiusPercentage: 30,
+    slideSizePercentage: 60,
+    maxVisibleAngle: Math.PI / 1.5,
+    minScale: 0.6,
+    minOpacity: 1.0,
 });
 
 // Computed property to get the data of the currently active slide

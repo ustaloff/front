@@ -131,13 +131,15 @@ export const use3DCarousel = (options = {}) => {
 
         // Вычисление поворота для 3D эффекта
         // Используем абсолютное значение угла для определения направления поворота
-        const rotationY = Math.max(
+        let rotationY = Math.max(
             -config.maxRotation,
             Math.min(
                 config.maxRotation,
                 (angleDiff / config.maxVisibleAngle) * config.maxRotation
             )
         );
+
+        rotationY = 0;
 
         // Вычисление z-index на основе позиции
         const zIndex = Math.round(50 - Math.abs(angleDiff) * 8);

@@ -8,6 +8,8 @@ import ClampGenerator from '@/components/pages/ClampGenerator.vue'
 import CSSFilterGenerator from '@/components/pages/CSSFilterGenerator.vue'
 import DeviceBreakpointDemo from '@/components/DeviceBreakpointDemo.vue'
 import PrimeVueDemo from '@/components/PrimeVueDemo.vue'
+import GridDemo from '@/components/GridDemo.vue'
+import WheelDemo from '@/components/WheelDemo.vue'
 
 const routes = [
     {
@@ -46,6 +48,16 @@ const routes = [
         path: '/primevue-demo',
         name: 'primevue-demo',
         component: PrimeVueDemo,
+    },
+    {
+        path: '/grid-demo',
+        name: 'grid-demo',
+        component: GridDemo,
+    },
+    {
+        path: '/wheel-demo',
+        name: 'wheel-demo',
+        component: WheelDemo,
     },
     {
         path: '/:pathMatch(.*)*',

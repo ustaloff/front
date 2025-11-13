@@ -113,6 +113,18 @@ const onBeforeHide = () => {
                                     <span>PrimeVue Demo</span>
                                 </router-link>
                             </li>
+                            <li>
+                                <router-link to="/grid-demo">
+                                    <span class="icon">📱</span>
+                                    <span>Grid Demo</span>
+                                </router-link>
+                            </li>
+                            <li>
+                                <router-link to="/wheel-demo">
+                                    <span class="icon">📱</span>
+                                    <span>Wheel Demo</span>
+                                </router-link>
+                            </li>
                             <li v-if="auth.user">
                                 <router-link to="/profile">
                                     <span class="icon">👤</span>
@@ -141,6 +153,6 @@ const onBeforeHide = () => {
     </div>
 </template>
 
-<style lang="sass">
+<style lang="scss">
 @use '@/assets/sidebar'
 </style>
